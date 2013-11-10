@@ -386,18 +386,23 @@ void checkFirstTime(bool eepromReset)
         eepromConfig.PID[H_PID].dErrorCalc              =   D_ERROR;
         eepromConfig.PID[H_PID].type                    =   OTHER;
 
-        eepromConfig.magVar                 =  9.033333f * D2R;  // Albuquerque, NM Mag Var 9 degrees 2 minutes (+ East, - West)
+        eepromConfig.magVar                   =  9.033333f * D2R;  // Albuquerque, NM Mag Var 9 degrees 2 minutes (+ East, - West)
 
-        eepromConfig.batteryCells           = 3;
-        eepromConfig.voltageMonitorScale    = 11.5f / 1.5f;
-        eepromConfig.voltageMonitorBias     = 0.0f;
+        eepromConfig.batteryCells             = 3;
+        eepromConfig.voltageMonitorScale      = 11.5f / 1.5f;
+        eepromConfig.voltageMonitorBias       = 0.0f;
 
-        eepromConfig.armCount               =  50;
-        eepromConfig.disarmCount            =  0;
+        eepromConfig.armCount                 =  50;
+        eepromConfig.disarmCount              =  0;
 
-        eepromConfig.activeTelemetry        =  0;
+        eepromConfig.activeTelemetry          =  0;
 
         eepromConfig.verticalVelocityHoldOnly = true;
+
+        eepromConfig.externalHMC5883          = false;
+        eepromConfig.externalMS5611           = false;
+
+        eepromConfig.useMXR9150               = false;
 
         writeEEPROM();
 	}

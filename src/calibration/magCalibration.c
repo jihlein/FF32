@@ -45,7 +45,7 @@ uint8_t magCalibrating = false;
 // Mag Calibration
 ///////////////////////////////////////////////////////////////////////////////
 
-void magCalibration(I2C_TypeDef *I2Cx)
+void magCalibration(void)
 {
 	uint16_t calibrationCounter = 0;
 	uint16_t population[2][3];
@@ -70,7 +70,7 @@ void magCalibration(I2C_TypeDef *I2Cx)
 
     while ((cliAvailable() == false) && (calibrationCounter < 600))
 	{
-		if (readMag(I2Cx) == true)
+		if (readMag() == true)
 		{
 			d[calibrationCounter][XAXIS] = (float)rawMag[XAXIS].value * magScaleFactor[XAXIS];
 			d[calibrationCounter][YAXIS] = (float)rawMag[YAXIS].value * magScaleFactor[YAXIS];

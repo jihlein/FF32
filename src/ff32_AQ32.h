@@ -285,8 +285,17 @@ typedef struct eepromConfig_t
 
     ///////////////////////////////////
 
+    uint8_t externalHMC5883;
+    uint8_t externalMS5611;
+
+    uint8_t useMXR9150;
+
+    ///////////////////////////////////
+
     uint8_t  CRCFlags;
     uint32_t CRCAtEnd[1];
+
+    ///////////////////////////////////
 
 } eepromConfig_t;
 

@@ -67,12 +67,21 @@ void sensorCLI()
             ///////////////////////////
 
             case 'a': // Sensor Data
-                cliPrintF("\nMXR Accel Bias:            %9.4f, %9.4f, %9.4f\n", eepromConfig.accelBiasMXR[XAXIS],
-				                                                		        eepromConfig.accelBiasMXR[YAXIS],
-				                                                		        eepromConfig.accelBiasMXR[ZAXIS]);
-				cliPrintF("MXR Accel Scale Factor:    %9.4f, %9.4f, %9.4f\n",   eepromConfig.accelScaleFactorMXR[XAXIS],
-								                                                eepromConfig.accelScaleFactorMXR[YAXIS],
-				                                                		        eepromConfig.accelScaleFactorMXR[ZAXIS]);
+            	cliPrintF("\n");
+            	cliPrintF("External HMC5883 in use:   %s\n", eepromConfig.externalHMC5883 ? "Yes" : "No");
+            	cliPrintF("External MS5611  in use:   %s\n", eepromConfig.externalMS5611  ? "Yes" : "No");
+            	cliPrintF("MXR9150 Accel in use:      %s\n", eepromConfig.useMXR9150      ? "Yes" : "No");
+            	cliPrintF("\n");
+
+                if (eepromConfig.useMXR9150 == true)
+                {
+                	cliPrintF("MXR Accel Bias:            %9.4f, %9.4f, %9.4f\n",   eepromConfig.accelBiasMXR[XAXIS],
+				                                                		            eepromConfig.accelBiasMXR[YAXIS],
+				                                                		            eepromConfig.accelBiasMXR[ZAXIS]);
+				    cliPrintF("MXR Accel Scale Factor:    %9.4f, %9.4f, %9.4f\n",   eepromConfig.accelScaleFactorMXR[XAXIS],
+								                                                    eepromConfig.accelScaleFactorMXR[YAXIS],
+				                                                		            eepromConfig.accelScaleFactorMXR[ZAXIS]);
+                }
                 cliPrintF("Accel Temp Comp Slope:     %9.4f, %9.4f, %9.4f\n",   eepromConfig.accelTCBiasSlope[XAXIS],
                                                 		                        eepromConfig.accelTCBiasSlope[YAXIS],
                                                 		                        eepromConfig.accelTCBiasSlope[ZAXIS]);
@@ -144,7 +153,7 @@ void sensorCLI()
             ///////////////////////////
 
             case 'c': // Magnetometer Calibration
-                magCalibration(HMC5883L_I2C);
+                magCalibration();
 
                 sensorQuery = 'a';
                 validQuery = true;
@@ -152,8 +161,53 @@ void sensorCLI()
 
             ///////////////////////////
 
-            case 'd': // Accel Bias and Scale Factor Calibration
-                accelCalibration();
+            case 'd': // MXR9150 Bias and Scale Factor Calibration
+                if (eepromConfig.useMXR9150 == true)
+                	accelCalibration();
+                else
+                	cliPrintF("Function not available....\n");
+
+                sensorQuery = 'a';
+                validQuery = true;
+                break;
+
+            ///////////////////////////
+
+            case 'e': // Toggle External HMC5883 Use
+                if (eepromConfig.externalHMC5883)
+                	eepromConfig.externalHMC5883 = false;
+                else
+               	    eepromConfig.externalHMC5883 = true;
+
+                initMag();
+
+                sensorQuery = 'a';
+                validQuery = true;
+                break;
+
+            ///////////////////////////
+
+            case 'f': // Toggle External MS5611 Use
+                if (eepromConfig.externalMS5611)
+                	eepromConfig.externalMS5611 = false;
+                else
+               	    eepromConfig.externalMS5611 = true;
+
+                initPressure();
+
+                sensorQuery = 'a';
+                validQuery = true;
+                break;
+
+            ///////////////////////////
+
+            case 'g': // Toggle MXR9150 Use
+                if (eepromConfig.useMXR9150)
+                   	eepromConfig.useMXR9150 = false;
+                else
+               	    eepromConfig.useMXR9150 = true;
+
+                computeMPU6000RTData();
 
                 sensorQuery = 'a';
                 validQuery = true;
@@ -290,8 +344,9 @@ void sensorCLI()
 			   	cliPrint("'b' MPU6000 Temp Calibration               'B' Set Accel Cutoff                     BAccelCutoff\n");
 			   	cliPrint("'c' Magnetometer Calibration               'C' Set kpAcc/kiAcc                      CkpAcc;kiAcc\n");
 			   	cliPrint("'d' Accel Bias and SF Calibration          'D' Set kpMag/kiMag                      DkpMag;kiMag\n");
-			   	cliPrint("                                           'E' Set h dot est/h est Comp Filter A/B  EA;B\n");
-			   	cliPrint("                                           'M' Set Mag Variation (+ East, - West)   MMagVar\n");
+			   	cliPrint("'e' Toggle External HMC5883 State          'E' Set h dot est/h est Comp Filter A/B  EA;B\n");
+			   	cliPrint("'f' Toggle External MS5611 State           'M' Set Mag Variation (+ East, - West)   MMagVar\n");
+			   	cliPrint("'g' Toggle MXR9150 Use\n");
 			   	cliPrint("'v' Toggle Vertical Velocity Hold Only     'V' Set Voltage Monitor Parameters       Vscale;bias;cells\n");
 			   	cliPrint("                                           'W' Write EEPROM Parameters\n");
 			   	cliPrint("'x' Exit Sensor CLI                        '?' Command Summary\n");

@@ -204,12 +204,12 @@ void SysTick_Handler(void)
 
             if (!newTemperatureReading)
 			{
-				readTemperatureRequestPressure(MS5611_I2C);
+				readTemperatureRequestPressure();
 			    newTemperatureReading = true;
 			}
 			else
 			{
-			    readPressureRequestTemperature(MS5611_I2C);
+			    readPressureRequestTemperature();
 			    newPressureReading = true;
 			}
         }
@@ -222,7 +222,7 @@ void SysTick_Handler(void)
         ///////////////////////////////
 
         if (((frameCounter + 1) % COUNT_10HZ) == 0)
-            newMagData = readMag(HMC5883L_I2C);
+            newMagData = readMag();
 
         if ((frameCounter % COUNT_10HZ) == 0)
             frame_10Hz = true;
@@ -381,8 +381,8 @@ void systemInit(void)
     GREEN_LED_ON;
 
     initMPU6000();
-    initMag(HMC5883L_I2C);
-    initPressure(MS5611_I2C);
+    initMag();
+    initPressure();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
