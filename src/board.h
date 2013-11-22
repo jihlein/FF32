@@ -70,6 +70,7 @@
 #include "drv_cli.h"
 #include "drv_crc.h"
 #include "drv_gpio.h"
+#include "drv_gps.h"
 #include "drv_i2c.h"
 #include "drv_openLog.h"
 #include "drv_ppmRx.h"

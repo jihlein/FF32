@@ -154,8 +154,8 @@ extern heading_t heading;
 // Mixer Configurations
 ///////////////////////////////////////////////////////////////////////////////
 
-enum { MIXERTYPE_QUADX,
-
+enum { MIXERTYPE_TRI,
+	   MIXERTYPE_QUADX,
        MIXERTYPE_HEX6X,
      };
 
@@ -253,8 +253,13 @@ typedef struct eepromConfig_t
 
     ///////////////////////////////////
 
-    uint8_t mixerConfiguration;
-    float yawDirection;
+    uint8_t  mixerConfiguration;
+    float    yawDirection;
+
+    uint16_t triYawServoPwmRate;
+    float    triYawServoMin;
+    float    triYawServoMid;
+    float    triYawServoMax;
 
     ///////////////////////////////////
 
@@ -289,6 +294,10 @@ typedef struct eepromConfig_t
     uint8_t externalMS5611;
 
     uint8_t useMXR9150;
+
+    ///////////////////////////////////
+
+    uint32_t gpsBaudRate;
 
     ///////////////////////////////////
 

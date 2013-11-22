@@ -55,7 +55,12 @@ void initMixer(void)
 {
     switch (eepromConfig.mixerConfiguration)
     {
-        case MIXERTYPE_QUADX:
+        case MIXERTYPE_TRI:
+            numberMotor = 3;
+            motor[7] = eepromConfig.triYawServoMid;
+            break;
+
+       case MIXERTYPE_QUADX:
             numberMotor = 4;
             break;
 
@@ -87,6 +92,9 @@ void writeMotors(void)
 
     for (i = 0; i < numberMotor; i++)
         pwmEscWrite(i, (uint16_t)motor[i]);
+
+    if (eepromConfig.mixerConfiguration == MIXERTYPE_TRI)
+    	pwmEscWrite(7, (uint16_t)motor[7]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,6 +143,19 @@ void mixTable(void)
 
     switch ( eepromConfig.mixerConfiguration )
     {
+        ///////////////////////////////
+
+        case MIXERTYPE_TRI:
+            motor[0] = PIDMIX(  1.0f, -0.666667f, 0.0f );  // Left  CW
+            motor[1] = PIDMIX( -1.0f, -0.666667f, 0.0f );  // Right CCW
+            motor[2] = PIDMIX(  0.0f,  1.333333f, 0.0f );  // Rear  CW or CCW
+
+            motor[7] = constrain( eepromConfig.triYawServoMid + eepromConfig.yawDirection * axisPID[YAW],
+                                  eepromConfig.triYawServoMin, eepromConfig.triYawServoMax );
+            break;
+
+        ///////////////////////////////
+
         case MIXERTYPE_QUADX:
             motor[0] = PIDMIX(  1.0f, -1.0f, -1.0f );      // Front Left  CW
             motor[1] = PIDMIX( -1.0f, -1.0f,  1.0f );      // Front Right CCW

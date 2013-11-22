@@ -336,6 +336,15 @@ void cliCom(void)
 
         ///////////////////////////////
 
+        case 'm': // Axis PIDs
+        	cliPrintF("%9.4f, %9.4f, %9.4f\n", axisPID[ROLL ],
+        			                           axisPID[PITCH],
+        			                           axisPID[YAW  ]);
+        	validCliCommand = false;
+        	break;
+
+        ///////////////////////////////
+
         case 'o':
             cliPrintF("%9.4f\n", batteryVoltage);
 
@@ -763,7 +772,7 @@ void cliCom(void)
    		    }
 
    		    cliPrint("\n");
-   		    cliPrint("'m' Not Used                               'M' Not Used\n");
+   		    cliPrint("'m' Axis PIDs                              'M' Not Used\n");
    		    cliPrint("'n' Not Used                               'N' Mixer CLI\n");
    		    cliPrint("'o' Battery Voltage                        'O' Receiver CLI\n");
    		    cliPrint("'p' Primary Spektrum Raw Data              'P' Sensor CLI\n");

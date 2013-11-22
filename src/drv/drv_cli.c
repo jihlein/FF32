@@ -122,7 +122,7 @@ void cliPrintF(const char * fmt, ...)
 	va_list  vlist;
 	va_start (vlist, fmt);
 
-	vsnprintf(buf, sizeof(buf), fmt, vlist);
+	vsnprintf(buf, sizeof(buf) - 1, fmt, vlist);
 	cliPrint(buf);
 	va_end(vlist);
 }

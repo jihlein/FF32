@@ -411,7 +411,7 @@ int main(void)
             if ((execUpCount == 5) && (execUp == false))
             {
                 execUp = true;
-                pwmEscInit(eepromConfig.escPwmRate);
+                pwmEscInit();
             }
 
 			while (batMonLowWarning > 0)

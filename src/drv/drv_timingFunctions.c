@@ -54,8 +54,8 @@ void timingFunctionsInit(void)
     TIM_TimeBaseInit(TIM10, &TIM_TimeBaseStructure);
     TIM_TimeBaseInit(TIM11, &TIM_TimeBaseStructure);
 
-    TIM_SetCounter(TIM10, 0);
-    TIM_SetCounter(TIM11, 0);
+    TIM_SetCounter(TIM10,  4000);  // First pass value
+    TIM_SetCounter(TIM11, 20000);  // First pass value
 }
 
 ///////////////////////////////////////////////////////////////////////////////

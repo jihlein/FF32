@@ -334,6 +334,7 @@ void systemInit(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM11,  ENABLE);
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4,  ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
@@ -354,6 +355,7 @@ void systemInit(void)
 
     cliInit();
     gpioInit();
+    gpsInit();
     openLogInit();
 
     BLUE_LED_ON;
@@ -364,7 +366,7 @@ void systemInit(void)
     batteryInit();
     i2cInit(I2C1);
     i2cInit(I2C2);
-    pwmServoInit(eepromConfig.servoPwmRate);
+    pwmServoInit();
 
     if (eepromConfig.receiverType == SPEKTRUM)
         spektrumInit();
