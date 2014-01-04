@@ -299,6 +299,10 @@ void checkResetType(void)
 
 void systemInit(void)
 {
+	RCC_ClocksTypeDef rccClocks;
+
+	///////////////////////////////////
+
 	// Init cycle counter
     cycleCounterInit();
 
@@ -360,7 +364,27 @@ void systemInit(void)
 
     BLUE_LED_ON;
 
-    delay(20000);  // 20 sec total delay for sensor stabilization - probably not long enough.....
+    delay(10000);  // 10 seconds of 20 second delay for sensor stabilization
+
+    cliPrintF("\nFF32 Firmware V%s, Build Date " __DATE__ " "__TIME__" \n", __FF32_VERSION);
+
+    if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+    {
+        cliPrint("\nRunning on external HSE clock....\n");
+    }
+    else
+    {
+        cliPrint("\nERROR: Running on internal HSI clock....\n");
+    }
+
+    RCC_GetClocksFreq(&rccClocks);
+
+    cliPrintF("\nHCLK->   %3d MHz\n",   rccClocks.HCLK_Frequency   / 1000000);
+    cliPrintF(  "PCLK1->  %3d MHz\n",   rccClocks.PCLK1_Frequency  / 1000000);
+    cliPrintF(  "PCLK2->  %3d MHz\n",   rccClocks.PCLK2_Frequency  / 1000000);
+    cliPrintF(  "SYSCLK-> %3d MHz\n\n", rccClocks.SYSCLK_Frequency / 1000000);
+
+    delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
 
     adcInit();
     batteryInit();
