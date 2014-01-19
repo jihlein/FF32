@@ -384,6 +384,11 @@ void systemInit(void)
     cliPrintF(  "PCLK2->  %3d MHz\n",   rccClocks.PCLK2_Frequency  / 1000000);
     cliPrintF(  "SYSCLK-> %3d MHz\n\n", rccClocks.SYSCLK_Frequency / 1000000);
 
+    if (eepromConfig.receiverType == PPM)
+    	cliPrint("Using PPM Receiver....\n\n");
+    else
+    	cliPrint("Using Spektrum Satellite Receiver....\n\n");
+
     delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
 
     adcInit();
