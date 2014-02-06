@@ -60,6 +60,8 @@
 #include "usbd_usr.h"
 #include "usbd_desc.h"
 
+#include "mavlink.h"
+
 /////////////////////////////////////////////////////////////////////////////
 
 #include "pid.h"
@@ -98,6 +100,7 @@
 #include "flightCommand.h"
 #include "MargAHRS.h"
 #include "magCalibration.h"
+#include "mavlinkStrings.h"
 #include "mixer.h"
 #include "mpu6000Calibration.h"
 #include "rfTelem.h"

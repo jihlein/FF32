@@ -93,13 +93,16 @@ void telemetryCLI()
                 cliPrint("    Telemetry Set 8: ");
                 cliPrintF("%s\n", eepromConfig.activeTelemetry == 128 ? "  Active" : "Inactive");
 
+                cliPrint("    MavLink:         ");
+                cliPrintF("%s\n", eepromConfig.mavlinkEnabled == true ? " Enabled" : "Disabled");
+
                 validQuery = false;
                 break;
 
             ///////////////////////////
 
             case 'b': // Turn all Telemetry Off
-                eepromConfig.activeTelemetry = 0;
+                eepromConfig.activeTelemetry = 0x0000;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -108,7 +111,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'c': // Toggle Telemetry Set 1 State
-                eepromConfig.activeTelemetry = 1;
+                eepromConfig.activeTelemetry ^= 0x0001;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -117,7 +120,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'd': // Toggle Telemetry Set 2 State
-                eepromConfig.activeTelemetry = 2;
+                eepromConfig.activeTelemetry ^= 0x0002;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -126,7 +129,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'e': // Toggle Telemetry Set 3 State
-                eepromConfig.activeTelemetry = 4;
+                eepromConfig.activeTelemetry ^= 0x0004;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -135,7 +138,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'f': // Toggle Telemetry Set 4 State
-                eepromConfig.activeTelemetry = 8;
+                eepromConfig.activeTelemetry ^= 0x0010;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -144,7 +147,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'g': // Toggle Telemetry Set 5 State
-                eepromConfig.activeTelemetry = 16;
+                eepromConfig.activeTelemetry ^= 0x0020;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -153,7 +156,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'h': // Toggle Telemetry Set 6 State
-                eepromConfig.activeTelemetry = 32;
+                eepromConfig.activeTelemetry ^= 0x0040;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -162,7 +165,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'i': // Toggle Telemetry Set 7 State
-                eepromConfig.activeTelemetry = 64;
+                eepromConfig.activeTelemetry ^= 0x0080;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -172,6 +175,23 @@ void telemetryCLI()
 
             case 'j': // Toggle Telemetry Set 8 State
                 eepromConfig.activeTelemetry = 128;
+
+                telemetryQuery = 'a';
+                validQuery     = true;
+                break;
+
+            ///////////////////////////
+
+            case 'k': // Toggle MavLink Enable/Disable
+                if (eepromConfig.mavlinkEnabled == false)
+                {
+					eepromConfig.mavlinkEnabled = true;
+                    eepromConfig.activeTelemetry = 0x0000;
+				}
+                else
+                {
+                    eepromConfig.mavlinkEnabled = false;
+				}
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -206,6 +226,7 @@ void telemetryCLI()
    		        cliPrint("'h' Toggle Telemetry Set 6 State\n");
    		        cliPrint("'i' Toggle Telemetry Set 7 State\n");
    		        cliPrint("'j' Toggle Telemetry Set 8 State\n");
+   		        cliPrint("'k' Toggle MavLink Enabled/Disabled\n");
    		        cliPrint("                                           'W' Write EEPROM Parameters\n");
    		        cliPrint("'x' Exit Telemetry CLI                     '?' Command Summary\n");
    		        cliPrint("\n");

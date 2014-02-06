@@ -184,13 +184,19 @@ int main(void)
                 magDataUpdate = true;
             }
 
-            cliCom();
-
-            rfCom();
-
             batMonTick();
 
-            ///////////////////////////
+            cliCom();
+
+            if (eepromConfig.mavlinkEnabled == true)
+            {
+				mavlinkSendAttitude();
+				mavlinkSendVfrHud();
+			}
+			else
+			{
+				rfCom();
+			}
 
             executionTime10Hz = micros() - currentTime;
 
@@ -418,6 +424,12 @@ int main(void)
 			{
 				//BEEP_TOGGLE;
 				batMonLowWarning--;
+			}
+
+            if (eepromConfig.mavlinkEnabled == true)
+            {
+				mavlinkSendHeartbeat();
+				mavlinkSendBattery();
 			}
 
             executionTime1Hz = micros() - currentTime;

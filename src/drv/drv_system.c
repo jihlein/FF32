@@ -407,6 +407,7 @@ void systemInit(void)
     timingFunctionsInit();
 
     initFirstOrderFilter();
+    initMavlink();
     initPID();
 
     GREEN_LED_ON;
