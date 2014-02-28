@@ -7,7 +7,7 @@
 
   Open Source STM32 Based Multicopter Controller Software
 
-  Designed to run on the AQ32 Flight Control Board
+  Designed to run on the Naze32Pro Flight Control Board
 
   Includes code and/or ideas from:
 
@@ -94,7 +94,7 @@ void telemetryCLI()
                 cliPrintF("%s\n", eepromConfig.activeTelemetry == 128 ? "  Active" : "Inactive");
 
                 cliPrint("    MavLink:         ");
-                cliPrintF("%s\n", eepromConfig.mavlinkEnabled == true ? " Enabled" : "Disabled");
+                cliPrintF("%s\n", eepromConfig.mavlinkEnabled == true ? " Enabled\n" : "Disabled\n");
 
                 validQuery = false;
                 break;
@@ -102,7 +102,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'b': // Turn all Telemetry Off
-                eepromConfig.activeTelemetry = 0x0000;
+                eepromConfig.activeTelemetry = 0;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -111,7 +111,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'c': // Toggle Telemetry Set 1 State
-                eepromConfig.activeTelemetry ^= 0x0001;
+                eepromConfig.activeTelemetry = 1;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -120,7 +120,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'd': // Toggle Telemetry Set 2 State
-                eepromConfig.activeTelemetry ^= 0x0002;
+                eepromConfig.activeTelemetry = 2;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -129,7 +129,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'e': // Toggle Telemetry Set 3 State
-                eepromConfig.activeTelemetry ^= 0x0004;
+                eepromConfig.activeTelemetry = 4;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -138,7 +138,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'f': // Toggle Telemetry Set 4 State
-                eepromConfig.activeTelemetry ^= 0x0010;
+                eepromConfig.activeTelemetry = 8;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -147,7 +147,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'g': // Toggle Telemetry Set 5 State
-                eepromConfig.activeTelemetry ^= 0x0020;
+                eepromConfig.activeTelemetry = 16;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -156,7 +156,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'h': // Toggle Telemetry Set 6 State
-                eepromConfig.activeTelemetry ^= 0x0040;
+                eepromConfig.activeTelemetry = 32;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -165,7 +165,7 @@ void telemetryCLI()
             ///////////////////////////
 
             case 'i': // Toggle Telemetry Set 7 State
-                eepromConfig.activeTelemetry ^= 0x0080;
+                eepromConfig.activeTelemetry = 64;
 
                 telemetryQuery = 'a';
                 validQuery     = true;
@@ -210,6 +210,8 @@ void telemetryCLI()
             case 'W': // Write EEPROM Parameters
                 cliPrint("\nWriting EEPROM Parameters....\n\n");
                 writeEEPROM();
+
+                validQuery = false;
                 break;
 
             ///////////////////////////

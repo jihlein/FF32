@@ -108,111 +108,111 @@ void rfCom(void)
     {
         ///////////////////////////////
 
-    case 'a': // Rate PIDs
-        telemetryPrintF("\nRoll Rate PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n", eepromConfig.PID[ROLL_RATE_PID].B,
-                                                                                     eepromConfig.PID[ROLL_RATE_PID].P,
-            		                                                                 eepromConfig.PID[ROLL_RATE_PID].I,
-            		                                                                 eepromConfig.PID[ROLL_RATE_PID].D,
-            		                                                                 eepromConfig.PID[ROLL_RATE_PID].windupGuard,
-            		                                                                 eepromConfig.PID[ROLL_RATE_PID].dErrorCalc ? "Error" : "State");
+        case 'a': // Rate PIDs
+            telemetryPrintF("\nRoll Rate PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n", eepromConfig.PID[ROLL_RATE_PID].B,
+                                                                                         eepromConfig.PID[ROLL_RATE_PID].P,
+            	    	                                                                 eepromConfig.PID[ROLL_RATE_PID].I,
+            		                                                                     eepromConfig.PID[ROLL_RATE_PID].D,
+            		                                                                     eepromConfig.PID[ROLL_RATE_PID].windupGuard,
+            		                                                                     eepromConfig.PID[ROLL_RATE_PID].dErrorCalc ? "Error" : "State");
 
-        telemetryPrintF("Pitch Rate PID: %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[PITCH_RATE_PID].B,
-                        		                                                     eepromConfig.PID[PITCH_RATE_PID].P,
-            		                                                                 eepromConfig.PID[PITCH_RATE_PID].I,
-            		                                                                 eepromConfig.PID[PITCH_RATE_PID].D,
-            		                                                                 eepromConfig.PID[PITCH_RATE_PID].windupGuard,
-            		                                                                 eepromConfig.PID[PITCH_RATE_PID].dErrorCalc ? "Error" : "State");
+            telemetryPrintF("Pitch Rate PID: %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[PITCH_RATE_PID].B,
+                            		                                                     eepromConfig.PID[PITCH_RATE_PID].P,
+            	    	                                                                 eepromConfig.PID[PITCH_RATE_PID].I,
+            		                                                                     eepromConfig.PID[PITCH_RATE_PID].D,
+            		                                                                     eepromConfig.PID[PITCH_RATE_PID].windupGuard,
+            		                                                                     eepromConfig.PID[PITCH_RATE_PID].dErrorCalc ? "Error" : "State");
 
-        telemetryPrintF("Yaw Rate PID:   %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[YAW_RATE_PID].B,
-                         		                                                     eepromConfig.PID[YAW_RATE_PID].P,
-            		                                                                 eepromConfig.PID[YAW_RATE_PID].I,
-            		                                                                 eepromConfig.PID[YAW_RATE_PID].D,
-            		                                                                 eepromConfig.PID[YAW_RATE_PID].windupGuard,
-            		                                                                 eepromConfig.PID[YAW_RATE_PID].dErrorCalc ? "Error" : "State");
-        rfQueryType = 'x';
-        validRFCommand = false;
-        break;
+            telemetryPrintF("Yaw Rate PID:   %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[YAW_RATE_PID].B,
+                             		                                                     eepromConfig.PID[YAW_RATE_PID].P,
+            	    	                                                                 eepromConfig.PID[YAW_RATE_PID].I,
+            		                                                                     eepromConfig.PID[YAW_RATE_PID].D,
+            		                                                                     eepromConfig.PID[YAW_RATE_PID].windupGuard,
+            		                                                                     eepromConfig.PID[YAW_RATE_PID].dErrorCalc ? "Error" : "State");
+            rfQueryType = 'x';
+            validRFCommand = false;
+            break;
 
-    ///////////////////////////////
+        ///////////////////////////////
 
-    case 'b': // Attitude PIDs
-        telemetryPrintF("\nRoll Attitude PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n", eepromConfig.PID[ROLL_ATT_PID].B,
-          		                                                                         eepromConfig.PID[ROLL_ATT_PID].P,
-           		                                                                         eepromConfig.PID[ROLL_ATT_PID].I,
-           		                                                                         eepromConfig.PID[ROLL_ATT_PID].D,
-           		                                                                         eepromConfig.PID[ROLL_ATT_PID].windupGuard,
-           		                                                                         eepromConfig.PID[ROLL_ATT_PID].dErrorCalc ? "Error" : "State");
+        case 'b': // Attitude PIDs
+            telemetryPrintF("\nRoll Attitude PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n", eepromConfig.PID[ROLL_ATT_PID].B,
+          	    	                                                                         eepromConfig.PID[ROLL_ATT_PID].P,
+           		                                                                             eepromConfig.PID[ROLL_ATT_PID].I,
+           		                                                                             eepromConfig.PID[ROLL_ATT_PID].D,
+           		                                                                             eepromConfig.PID[ROLL_ATT_PID].windupGuard,
+           		                                                                             eepromConfig.PID[ROLL_ATT_PID].dErrorCalc ? "Error" : "State");
 
-        telemetryPrintF("Pitch Attitude PID: %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[PITCH_ATT_PID].B,
-           		                                                                         eepromConfig.PID[PITCH_ATT_PID].P,
-           		                                                                         eepromConfig.PID[PITCH_ATT_PID].I,
-           		                                                                         eepromConfig.PID[PITCH_ATT_PID].D,
-           		                                                                         eepromConfig.PID[PITCH_ATT_PID].windupGuard,
-           		                                                                         eepromConfig.PID[PITCH_ATT_PID].dErrorCalc ? "Error" : "State");
+            telemetryPrintF("Pitch Attitude PID: %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[PITCH_ATT_PID].B,
+           	    	                                                                         eepromConfig.PID[PITCH_ATT_PID].P,
+           		                                                                             eepromConfig.PID[PITCH_ATT_PID].I,
+           		                                                                             eepromConfig.PID[PITCH_ATT_PID].D,
+           		                                                                             eepromConfig.PID[PITCH_ATT_PID].windupGuard,
+           		                                                                             eepromConfig.PID[PITCH_ATT_PID].dErrorCalc ? "Error" : "State");
 
-        telemetryPrintF("Heading PID:        %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[HEADING_PID].B,
-           		                                                                         eepromConfig.PID[HEADING_PID].P,
-           		                                                                         eepromConfig.PID[HEADING_PID].I,
-           		                                                                         eepromConfig.PID[HEADING_PID].D,
-           		                                                                         eepromConfig.PID[HEADING_PID].windupGuard,
-           		                                                                         eepromConfig.PID[HEADING_PID].dErrorCalc ? "Error" : "State");
-        rfQueryType = 'x';
-        validRFCommand = false;
-        break;
+            telemetryPrintF("Heading PID:        %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[HEADING_PID].B,
+           	    	                                                                         eepromConfig.PID[HEADING_PID].P,
+           		                                                                             eepromConfig.PID[HEADING_PID].I,
+           		                                                                             eepromConfig.PID[HEADING_PID].D,
+           		                                                                             eepromConfig.PID[HEADING_PID].windupGuard,
+           		                                                                             eepromConfig.PID[HEADING_PID].dErrorCalc ? "Error" : "State");
+            rfQueryType = 'x';
+            validRFCommand = false;
+            break;
 
-    ///////////////////////////////
+        ///////////////////////////////
 
-    case 'c': // Velocity PIDs
-        telemetryPrintF("\nnDot PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n", eepromConfig.PID[NDOT_PID].B,
-           		                                                                eepromConfig.PID[NDOT_PID].P,
-           		                                                                eepromConfig.PID[NDOT_PID].I,
-           		                                                                eepromConfig.PID[NDOT_PID].D,
-           		                                                                eepromConfig.PID[NDOT_PID].windupGuard,
-           		                                                                eepromConfig.PID[NDOT_PID].dErrorCalc ? "Error" : "State");
+        case 'c': // Velocity PIDs
+            telemetryPrintF("\nnDot PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n", eepromConfig.PID[NDOT_PID].B,
+           	    	                                                                eepromConfig.PID[NDOT_PID].P,
+           		                                                                    eepromConfig.PID[NDOT_PID].I,
+           		                                                                    eepromConfig.PID[NDOT_PID].D,
+           		                                                                    eepromConfig.PID[NDOT_PID].windupGuard,
+           		                                                                    eepromConfig.PID[NDOT_PID].dErrorCalc ? "Error" : "State");
 
-        telemetryPrintF("eDot PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[EDOT_PID].B,
-           		                                                                eepromConfig.PID[EDOT_PID].P,
-           		                                                                eepromConfig.PID[EDOT_PID].I,
-           		                                                                eepromConfig.PID[EDOT_PID].D,
-           		                                                                eepromConfig.PID[EDOT_PID].windupGuard,
-           		                                                                eepromConfig.PID[EDOT_PID].dErrorCalc ? "Error" : "State");
+            telemetryPrintF("eDot PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[EDOT_PID].B,
+           	    	                                                                eepromConfig.PID[EDOT_PID].P,
+           		                                                                    eepromConfig.PID[EDOT_PID].I,
+           		                                                                    eepromConfig.PID[EDOT_PID].D,
+           		                                                                    eepromConfig.PID[EDOT_PID].windupGuard,
+           		                                                                    eepromConfig.PID[EDOT_PID].dErrorCalc ? "Error" : "State");
 
-        telemetryPrintF("hDot PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[HDOT_PID].B,
-           		                                                                eepromConfig.PID[HDOT_PID].P,
-           		                                                                eepromConfig.PID[HDOT_PID].I,
-           		                                                                eepromConfig.PID[HDOT_PID].D,
-           		                                                                eepromConfig.PID[HDOT_PID].windupGuard,
-           		                                                                eepromConfig.PID[HDOT_PID].dErrorCalc ? "Error" : "State");
-        rfQueryType = 'x';
-        validRFCommand = false;
-        break;
+            telemetryPrintF("hDot PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[HDOT_PID].B,
+           	    	                                                                eepromConfig.PID[HDOT_PID].P,
+           		                                                                    eepromConfig.PID[HDOT_PID].I,
+           		                                                                    eepromConfig.PID[HDOT_PID].D,
+           		                                                                    eepromConfig.PID[HDOT_PID].windupGuard,
+           		                                                                    eepromConfig.PID[HDOT_PID].dErrorCalc ? "Error" : "State");
+            rfQueryType = 'x';
+            validRFCommand = false;
+            break;
 
-    ///////////////////////////////
+        ///////////////////////////////
 
-    case 'd': // Position PIDs
-        telemetryPrintF("\nN PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n", eepromConfig.PID[N_PID].B,
-           		                                                             eepromConfig.PID[N_PID].P,
-           		                                                             eepromConfig.PID[N_PID].I,
-           		                                                             eepromConfig.PID[N_PID].D,
-           		                                                             eepromConfig.PID[N_PID].windupGuard,
-           		                                                             eepromConfig.PID[N_PID].dErrorCalc ? "Error" : "State");
+        case 'd': // Position PIDs
+            telemetryPrintF("\nN PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n", eepromConfig.PID[N_PID].B,
+           	    	                                                             eepromConfig.PID[N_PID].P,
+           		                                                                 eepromConfig.PID[N_PID].I,
+           		                                                                 eepromConfig.PID[N_PID].D,
+           		                                                                 eepromConfig.PID[N_PID].windupGuard,
+           		                                                                 eepromConfig.PID[N_PID].dErrorCalc ? "Error" : "State");
 
-        telemetryPrintF("E PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[E_PID].B,
-           		                                                             eepromConfig.PID[E_PID].P,
-           		                                                             eepromConfig.PID[E_PID].I,
-           		                                                             eepromConfig.PID[E_PID].D,
-           		                                                             eepromConfig.PID[E_PID].windupGuard,
-           		                                                             eepromConfig.PID[E_PID].dErrorCalc ? "Error" : "State");
+            telemetryPrintF("E PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[E_PID].B,
+           	    	                                                             eepromConfig.PID[E_PID].P,
+           		                                                                 eepromConfig.PID[E_PID].I,
+           		                                                                 eepromConfig.PID[E_PID].D,
+           		                                                                 eepromConfig.PID[E_PID].windupGuard,
+           		                                                                 eepromConfig.PID[E_PID].dErrorCalc ? "Error" : "State");
 
-        telemetryPrintF("h PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[H_PID].B,
-           		                                                             eepromConfig.PID[H_PID].P,
-           		                                                             eepromConfig.PID[H_PID].I,
-           		                                                             eepromConfig.PID[H_PID].D,
-           		                                                             eepromConfig.PID[H_PID].windupGuard,
-           		                                                             eepromConfig.PID[H_PID].dErrorCalc ? "Error" : "State");
-        rfQueryType = 'x';
-        validRFCommand = false;
-        break;
+            telemetryPrintF("h PID:  %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %s\n",   eepromConfig.PID[H_PID].B,
+           	    	                                                             eepromConfig.PID[H_PID].P,
+           		                                                                 eepromConfig.PID[H_PID].I,
+           		                                                                 eepromConfig.PID[H_PID].D,
+           		                                                                 eepromConfig.PID[H_PID].windupGuard,
+           		                                                                 eepromConfig.PID[H_PID].dErrorCalc ? "Error" : "State");
+            rfQueryType = 'x';
+            validRFCommand = false;
+            break;
 
         ///////////////////////////////
 
@@ -360,22 +360,20 @@ void rfCom(void)
         case '?': // Command Summary
 
         	telemetryPrint("\n");
-        	telemetryPrint("'a' Rate PIDs                              'A' Set Roll Rate PID Data   AB;P;I;D;windupGuard;dErrorCalc\n");
+   		    telemetryPrint("'a' Rate PIDs                              'A' Set Roll Rate PID Data   AB;P;I;D;windupGuard;dErrorCalc\n");
    		    telemetryPrint("'b' Attitude PIDs                          'B' Set Pitch Rate PID Data  BB;P;I;D;windupGuard;dErrorCalc\n");
    		    telemetryPrint("'c' Velocity PIDs                          'C' Set Yaw Rate PID Data    CB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'d' Position PIDs                          'D' Set Roll Att PID Data    DB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'x' Terminate Serial Communication         'E' Set Pitch Att PID Data   EB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'1' High Speed Telemetry 1 Enable          'F' Set Hdg Hold PID Data    FB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'2' High Speed Telemetry 2 Enable          'G' Set nDot PID Data        GB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'3' High Speed Telemetry 3 Enable          'H' Set eDot PID Data        HB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'4' High Speed Telemetry 4 Enable          'I' Set hDot PID Data        IB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'5' High Speed Telemetry 5 Enable          'J' Set n PID Data           JB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'6' High Speed Telemetry 6 Enable          'K' Set e PID Data           KB;P;I;D;windupGuard;dErrorCalc\n");
-   		    telemetryPrint("'7' High Speed Telemetry 7 Enable          'L' Set h PID Data           LB;P;I;D;windupGuard;dErrorCalc\n");
-		   	telemetryPrint("'8' High Speed Telemetry 8 Enable          'W' Write EEPROM Parameters\n");
-		   	telemetryPrint("'9' High Speed Telemetry 9 Enable\n");
-		   	telemetryPrint("'0' High Speed Telemetry Disable           '?' Command Summary\n");
-   		    telemetryPrint("\n");
+   	    	telemetryPrint("'d' Position PIDs                          'D' Set Roll Att PID Data    DB;P;I;D;windupGuard;dErrorCalc\n");
+   		    telemetryPrint("                                           'E' Set Pitch Att PID Data   EB;P;I;D;windupGuard;dErrorCalc\n");
+   		    telemetryPrint("                                           'F' Set Hdg Hold PID Data    FB;P;I;D;windupGuard;dErrorCalc\n");
+   		    telemetryPrint("                                           'G' Set nDot PID Data        GB;P;I;D;windupGuard;dErrorCalc\n");
+   		    telemetryPrint("                                           'H' Set eDot PID Data        HB;P;I;D;windupGuard;dErrorCalc\n");
+   		    telemetryPrint("                                           'I' Set hDot PID Data        IB;P;I;D;windupGuard;dErrorCalc\n");
+   		    telemetryPrint("                                           'J' Set n PID Data           JB;P;I;D;windupGuard;dErrorCalc\n");
+   		    telemetryPrint("                                           'K' Set e PID Data           KB;P;I;D;windupGuard;dErrorCalc\n");
+    		telemetryPrint("                                           'L' Set h PID Data           LB;P;I;D;windupGuard;dErrorCalc\n");
+        	telemetryPrint("'x' Terminate RF Communication             'W' Write EEPROM Parameters\n");
+		   	telemetryPrint("                                           '?' Command Summary\n");
 
   		    rfQueryType = 'x';
   		    break;
