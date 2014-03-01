@@ -98,10 +98,7 @@ void writeMotors(void)
         pwmEscWrite(i, (uint16_t)motor[i]);
 
     if (eepromConfig.mixerConfiguration == MIXERTYPE_TRI)
-    {
-    	motor[7] = firstOrderFilter(motor[7], &firstOrderFilters[TRICOPTER_YAW_LOWPASS]);
-    	pwmEscWrite(7, (uint16_t)motor[7]);
-	}
+        pwmEscWrite(7, (uint16_t)motor[7]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -157,8 +154,12 @@ void mixTable(void)
             motor[1] = PIDMIX( -1.0f, -0.666667f, 0.0f );  // Right CCW
             motor[2] = PIDMIX(  0.0f,  1.333333f, 0.0f );  // Rear  CW or CCW
 
-            motor[7] = constrain( eepromConfig.triYawServoMid + eepromConfig.yawDirection * axisPID[YAW],
-                                  eepromConfig.triYawServoMin, eepromConfig.triYawServoMax );
+            motor[7] = eepromConfig.triYawServoMid + eepromConfig.yawDirection * axisPID[YAW];
+
+            motor[7] = firstOrderFilter(motor[7], &firstOrderFilters[TRICOPTER_YAW_LOWPASS]);
+
+            motor[7] = constrain(motor[7], eepromConfig.triYawServoMin, eepromConfig.triYawServoMax );
+
             break;
 
         ///////////////////////////////
