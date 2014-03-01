@@ -153,7 +153,7 @@ void receiverCLI()
 
                     TIM_ITConfig(TIM6, TIM_IT_Update, DISABLE);
                   	eepromConfig.receiverType = PPM;
-                    ppmRxInit();
+                    agl_ppmRxInit();
                 }
 
                 receiverQuery = 'a';

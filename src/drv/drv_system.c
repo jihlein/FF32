@@ -396,6 +396,7 @@ void systemInit(void)
     delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
 
     adcInit();
+    agl_ppmRxInit();
     batteryInit();
     i2cInit(I2C1);
     i2cInit(I2C2);
@@ -403,8 +404,6 @@ void systemInit(void)
 
     if (eepromConfig.receiverType == SPEKTRUM)
         spektrumInit();
-    else
-        ppmRxInit();
 
     spiInit(SPI3);
     telemetryInit();
