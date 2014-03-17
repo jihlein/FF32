@@ -393,6 +393,8 @@ void systemInit(void)
     else
     	cliPrint("Using Spektrum Satellite Receiver....\n\n");
 
+    initUBLOX();
+
     delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
 
     adcInit();

@@ -98,6 +98,7 @@
 #include "evr.h"
 #include "firstOrderFilter.h"
 #include "flightCommand.h"
+#include "gps.h"
 #include "MargAHRS.h"
 #include "magCalibration.h"
 #include "mavlinkStrings.h"

@@ -49,6 +49,8 @@ sensors_t      sensors;
 
 heading_t      heading;
 
+gps_t          gps;
+
 uint16_t       timerValue;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -183,6 +185,8 @@ int main(void)
                 newMagData = false;
                 magDataUpdate = true;
             }
+
+            decodeUbloxMsg();
 
             batMonTick();
 
@@ -393,6 +397,11 @@ int main(void)
 			{
 				LED1_TOGGLE;
 				batMonVeryLowWarning--;
+			}
+
+            if (eepromConfig.mavlinkEnabled == true)
+            {
+				mavlinkSendGpsRaw();
 			}
 
 			executionTime5Hz = micros() - currentTime;

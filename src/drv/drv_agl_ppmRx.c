@@ -57,7 +57,7 @@ static uint16_t pulseWidth[8] = { 0, };
 // Interrupt Handler
 ///////////////////////////////////////////////////////////////////////////////
 
-void TIM4_IRQHandler(void)
+void TIM1_CC_IRQHandler(void)
 {
     ///////////////////////////////////
 
@@ -66,11 +66,11 @@ void TIM4_IRQHandler(void)
     uint32_t inputCaptureValue = 0;
     uint16_t tmpccer = 0;
 
-    if (TIM_GetITStatus(TIM4, TIM_IT_CC1) == SET)
+    if (TIM_GetITStatus(TIM1, TIM_IT_CC3) == SET)
     {
-        inputCaptureValue = (uint16_t)TIM_GetCapture1(TIM4);
+        inputCaptureValue = (uint16_t)TIM_GetCapture3(TIM1);
 
-        TIM_ClearITPendingBit(TIM4, TIM_IT_CC1);
+        TIM_ClearITPendingBit(TIM1, TIM_IT_CC3);
 
         if (aglState == 0)
         {
@@ -81,17 +81,17 @@ void TIM4_IRQHandler(void)
             // Switch states
             aglState = 1;
 
-            // Disable CC Channel 1, Reset the CC1E Bit
-            TIM4->CCER &= (uint16_t)~TIM_CCER_CC1E;
+            // Disable CC Channel 3, Reset the CC3E Bit
+            TIM1->CCER &= (uint16_t)~TIM_CCER_CC3E;
 
-            tmpccer = TIM4->CCER;
+            tmpccer  = TIM1->CCER;
 
-            // Select the Polarity and set the CC1E Bit
-			tmpccer &= (uint16_t)~(TIM_CCER_CC1P          | TIM_CCER_CC1NP);
-            tmpccer |= (uint16_t) (TIM_ICPolarity_Falling | TIM_CCER_CC1E);
+            // Select the Polarity and set the CC3E Bit
+			tmpccer &= (uint16_t)~(TIM_CCER_CC3P                 | TIM_CCER_CC3NP);
+            tmpccer |= (uint16_t) ((TIM_ICPolarity_Falling << 8) | TIM_CCER_CC3E);
 
-            // Write to TIM4 CCER registers
-			TIM4->CCER = tmpccer;
+            // Write to TIM1 CCER registers
+			TIM1->CCER = tmpccer;
         }
         else
         {
@@ -106,17 +106,17 @@ void TIM4_IRQHandler(void)
             // Switch state
             aglState = 0;
 
-            // Disable CC Channel 1, Reset the CC1E Bit
-            TIM4->CCER &= (uint16_t)~TIM_CCER_CC1E;
+            // Disable CC Channel 3, Reset the CC3E Bit
+            TIM1->CCER &= (uint16_t)~TIM_CCER_CC3E;
 
-            tmpccer = TIM4->CCER;
+            tmpccer = TIM1->CCER;
 
             // Select the Polarity and set the CC1E Bit
-			tmpccer &= (uint16_t)~(TIM_CCER_CC1P         | TIM_CCER_CC1NP);
-            tmpccer |= (uint16_t) (TIM_ICPolarity_Rising | TIM_CCER_CC1E);
+			tmpccer &= (uint16_t)~(TIM_CCER_CC3P                | TIM_CCER_CC3NP);
+            tmpccer |= (uint16_t) ((TIM_ICPolarity_Rising << 8) | TIM_CCER_CC3E);
 
-            // Write to TIM4 CCER registers
-			TIM4->CCER = tmpccer;
+            // Write to TIM1 CCER registers
+			TIM1->CCER = tmpccer;
         }
     }
 
@@ -130,13 +130,13 @@ void TIM4_IRQHandler(void)
     static uint16_t last = 0;
     static uint8_t  chan = 0;
 
-    if (TIM_GetITStatus(TIM4, TIM_IT_CC4) == SET)
+    if (TIM_GetITStatus(TIM1, TIM_IT_CC4) == SET)
     {
         last = now;
-        now  = TIM_GetCapture4(TIM4);
+        now  = TIM_GetCapture1(TIM1);
         rcActive = true;
 
-        TIM_ClearITPendingBit(TIM4, TIM_IT_CC4);
+        TIM_ClearITPendingBit(TIM1, TIM_IT_CC4);
 
         diff = now - last;
 
@@ -173,23 +173,23 @@ void agl_ppmRxInit(void)
 
     ///////////////////////////////////
 
-    // AGL TIM4_CH1 PD12
+    // AGL TIM1_CH3 PE13
 
 	aglPulseWidth = 0;
 
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12;
+	GPIO_PinAFConfig(GPIOE, GPIO_PinSource13, GPIO_AF_TIM1);
+
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;
 
-    GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);
+    GPIO_Init(GPIOE, &GPIO_InitStructure);
 
     ///////////////////////////////////
 
-    // PPM TIM4_CH4 PD15
+    // PPM TIM1_CH4 PD14
 
     if (eepromConfig.receiverType == PPM)
     {
@@ -197,16 +197,16 @@ void agl_ppmRxInit(void)
 	    for (i = 0; i < 8; i++)
 	        pulseWidth[i] = RX_PULSE_1p5MS;
 
-        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_15;
+        GPIO_PinAFConfig(GPIOE, GPIO_PinSource14, GPIO_AF_TIM1);
 
-        GPIO_Init(GPIOD, &GPIO_InitStructure);
+        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_14;
 
-        GPIO_PinAFConfig(GPIOD, GPIO_PinSource15, GPIO_AF_TIM4);
+        GPIO_Init(GPIOE, &GPIO_InitStructure);
     }
 
     ///////////////////////////////////
 
-    NVIC_InitStructure.NVIC_IRQChannel                   = TIM4_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannel                   = TIM1_CC_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
@@ -219,21 +219,21 @@ void agl_ppmRxInit(void)
 	TIM_TimeBaseStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
 	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0x0000;
 
-    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+    TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
 
 	///////////////////////////////////
 
 	// AGL
 
-	TIM_ICInitStructure.TIM_Channel     = TIM_Channel_1;
+	TIM_ICInitStructure.TIM_Channel     = TIM_Channel_3;
     TIM_ICInitStructure.TIM_ICPolarity  = TIM_ICPolarity_Rising;
     TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
     TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
     TIM_ICInitStructure.TIM_ICFilter    = 0x00;
 
-    TIM_ICInit(TIM4, &TIM_ICInitStructure);
+    TIM_ICInit(TIM1, &TIM_ICInitStructure);
 
-    TIM_ITConfig(TIM4, TIM_IT_CC1, ENABLE);
+    TIM_ITConfig(TIM1, TIM_IT_CC3, ENABLE);
 
     ///////////////////////////////////
 
@@ -242,14 +242,14 @@ void agl_ppmRxInit(void)
     if (eepromConfig.receiverType == PPM)
     {
 		TIM_ICInitStructure.TIM_Channel = TIM_Channel_4;
-        TIM_ICInit(TIM4, &TIM_ICInitStructure);
+        TIM_ICInit(TIM1, &TIM_ICInitStructure);
 
-        TIM_ITConfig(TIM4, TIM_IT_CC4, ENABLE);
+        TIM_ITConfig(TIM1, TIM_IT_CC4, ENABLE);
     }
 
     ///////////////////////////////////
 
-    TIM_Cmd(TIM4, ENABLE);
+    TIM_Cmd(TIM1, ENABLE);
 
 	///////////////////////////////////
 }

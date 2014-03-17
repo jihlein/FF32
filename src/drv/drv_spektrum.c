@@ -52,8 +52,8 @@
 #define MASTER_BIND_COUNT   5
 #define SLAVE_BIND_COUNT    6
 
-#define SPEKTRUM_BIND_PIN   GPIO_Pin_15
-#define SPEKTRUM_BIND_GPIO  GPIOD
+#define SPEKTRUM_BIND_PIN   GPIO_Pin_14
+#define SPEKTRUM_BIND_GPIO  GPIOE
 
 ///////////////////////////////////////
 

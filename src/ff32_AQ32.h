@@ -132,6 +132,27 @@ typedef struct heading_t
 
 extern heading_t heading;
 
+typedef struct gps_t
+{
+	int32_t  latitude;     // 1e-7 degrees
+	int32_t  longitude;    // 1e-7 degrees
+	int32_t  altitude;     // mm
+	int32_t  velN;         // cm/s
+	int32_t  velE;         // cm/s
+	int32_t  velD;         // cm/s
+	uint32_t speed;        // cm/s
+	uint32_t gSpeed;       // cm/s
+	int32_t  heading;      // deg 1e-5
+    uint8_t  numSats;
+    uint8_t  fix;
+    uint32_t date;
+    uint32_t time;
+    uint16_t hdop;
+    uint16_t vdop;
+} gps_t;
+
+extern gps_t gps;
+
 ///////////////////////////////////////////////////////////////////////////////
 // PID Definitions
 ///////////////////////////////////////////////////////////////////////////////
@@ -312,10 +333,6 @@ typedef struct eepromConfig_t
     uint8_t externalMS5611;
 
     uint8_t useMXR9150;
-
-    ///////////////////////////////////
-
-    uint32_t gpsBaudRate;
 
     ///////////////////////////////////
 

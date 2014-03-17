@@ -76,6 +76,7 @@ static void uart2TxDMA(void)
     	return;
 
     DMA1_Stream6->M0AR = (uint32_t)&tx2Buffer[tx2BufferTail];
+
     if (tx2BufferHead > tx2BufferTail)
     {
 	    DMA_SetCurrDataCounter(DMA1_Stream6, tx2BufferHead - tx2BufferTail);
@@ -135,7 +136,7 @@ void gpsInit(void)
 
     NVIC_Init(&NVIC_InitStructure);
 
-    USART_InitStructure.USART_BaudRate            = eepromConfig.gpsBaudRate;
+    USART_InitStructure.USART_BaudRate            = 9600;
     USART_InitStructure.USART_WordLength          = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits            = USART_StopBits_1;
     USART_InitStructure.USART_Parity              = USART_Parity_No;
@@ -283,6 +284,23 @@ void gpsPrint(char *str)
     while (*str)
     {
     	tx2Buffer[tx2BufferHead] = *str++;
+    	tx2BufferHead = (tx2BufferHead + 1) % UART2_BUFFER_SIZE;
+    }
+
+	uart2TxDMA();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// GPS Print Binary String
+///////////////////////////////////////////////////////////////////////////////
+
+void gpsPrintBinary(uint8_t *buf, uint16_t length)
+{
+    uint16_t i;
+
+   for (i = 0; i < length; i++)
+    {
+    	tx2Buffer[tx2BufferHead] = buf[i];
     	tx2BufferHead = (tx2BufferHead + 1) % UART2_BUFFER_SIZE;
     }
 

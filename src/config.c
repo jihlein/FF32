@@ -43,7 +43,7 @@
 
 const char rcChannelLetters[] = "AERT1234";
 
-static uint8_t checkNewEEPROMConf = 5;
+static uint8_t checkNewEEPROMConf = 1;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -481,8 +481,6 @@ void checkFirstTime(bool eepromReset)
         eepromConfig.externalMS5611           = false;
 
         eepromConfig.useMXR9150               = false;
-
-        eepromConfig.gpsBaudRate              = 38400;
 
         writeEEPROM();
 	}

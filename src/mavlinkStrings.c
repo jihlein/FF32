@@ -122,25 +122,25 @@ void mavlinkSendBattery(void)
 ///////////////////////////////////////////////////////////////////////////////
 
 void mavlinkSendGpsRaw(void)
-{/*
+{
     mavlink_msg_gps_raw_int_pack(mavlink_system.sysid,            // uint8_t            system_id,
                                  mavlink_system.compid,           // uint8_t            component_id,
                                  &msg,                            // mavlink_message_t* msg,
-							     uint64_t time_usec,
-							     2,                               // uint8_t            fix_type,
-							     int32_t lat,
-							     int32_t lon,
-							     int32_t alt,
-							     0,                               // uint16_t           eph,
-							     0,                               // uint16_t           epv,
-							     0,                               // uint16_t           vel,
-							     0,                               // uint16_t           cog,
-							     4);                              // uint8_t            satellites_visible);
+							     (uint64_t)micros(),              // uint64_t           time_usec,
+							     gps.fix,                         // uint8_t            fix_type,
+							     gps.latitude,                    // int32_t            lat,
+							     gps.longitude,                   // int32_t            lon,
+							     gps.altitude,                    // int32_t            alt,
+							     gps.hdop,                        // uint16_t           eph,
+							     gps.vdop,                        // uint16_t           epv,
+							     gps.gSpeed,                      // uint16_t           vel,
+							     UINT16_MAX,                      // uint16_t           cog,
+							     gps.numSats);                    // uint8_t            satellites_visible);
 
 	// Copy the message to the send buffer
 	length = mavlink_msg_to_send_buffer(buffer, &msg);
 
-	telemetryPrintBinary(buffer, length);*/
+	telemetryPrintBinary(buffer, length);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

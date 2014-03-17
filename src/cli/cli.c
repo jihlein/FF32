@@ -346,6 +346,17 @@ void cliCom(void)
 
         ///////////////////////////////
 
+        case 'n': // GPS Data
+           	cliPrintF("%12ld, %12ld, %12ld, %4d, %4d\n", gps.latitude,
+           			                                     gps.longitude,
+           			                                     gps.altitude,
+           			                                     gps.fix,
+           			                                     gps.numSats);
+           	validCliCommand = false;
+            break;
+
+        ///////////////////////////////
+
         case 'o':
             cliPrintF("%9.4f\n", batteryVoltage);
 
@@ -757,7 +768,7 @@ void cliCom(void)
    		    cliPrint("'g' 500 Hz Accels                          'G' Set nDot PID Data        GB;P;I;D;windupGuard;dErrorCalc\n");
    		    cliPrint("'h' 100 Hz Earth Axis Accels               'H' Set eDot PID Data        HB;P;I;D;windupGuard;dErrorCalc\n");
    		    cliPrint("'i' 500 Hz Gyros                           'I' Set hDot PID Data        IB;P;I;D;windupGuard;dErrorCalc\n");
-   		    cliPrint("'j' 10 hz Mag Data                         'J' Set n PID Data           JB;P;I;D;windupGuard;dErrorCalc\n");
+   		    cliPrint("'j' 10 Hz Mag Data                         'J' Set n PID Data           JB;P;I;D;windupGuard;dErrorCalc\n");
    		    cliPrint("'k' Vertical Axis Variable                 'K' Set e PID Data           KB;P;I;D;windupGuard;dErrorCalc\n");
    		    cliPrint("'l' Attitudes                              'L' Set h PID Data           LB;P;I;D;windupGuard;dErrorCalc\n");
    		    cliPrint("\n");
@@ -774,7 +785,7 @@ void cliCom(void)
 
    		    cliPrint("\n");
    		    cliPrint("'m' Axis PIDs                              'M' Not Used\n");
-   		    cliPrint("'n' Not Used                               'N' Mixer CLI\n");
+   		    cliPrint("'n' GPS Data                               'N' Mixer CLI\n");
    		    cliPrint("'o' Battery Voltage                        'O' Receiver CLI\n");
    		    cliPrint("'p' Primary Spektrum Raw Data              'P' Sensor CLI\n");
    		    cliPrint("'q' Slave Spektrum Raw Data                'Q' Not Used\n");
