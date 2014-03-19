@@ -399,6 +399,8 @@ int main(void)
 				batMonVeryLowWarning--;
 			}
 
+            gpsUpdated();
+
             if (eepromConfig.mavlinkEnabled == true)
             {
 				mavlinkSendGpsRaw();

@@ -131,8 +131,8 @@ void mavlinkSendGpsRaw(void)
 							     gps.latitude,                    // int32_t            lat,
 							     gps.longitude,                   // int32_t            lon,
 							     gps.altitude,                    // int32_t            alt,
-							     gps.hdop,                        // uint16_t           eph,
-							     gps.vdop,                        // uint16_t           epv,
+							     gps.hDop,                        // uint16_t           eph,
+							     gps.vDop,                        // uint16_t           epv,
 							     gps.gSpeed,                      // uint16_t           vel,
 							     UINT16_MAX,                      // uint16_t           cog,
 							     gps.numSats);                    // uint8_t            satellites_visible);

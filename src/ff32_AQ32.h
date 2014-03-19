@@ -145,10 +145,13 @@ typedef struct gps_t
 	int32_t  heading;      // deg 1e-5
     uint8_t  numSats;
     uint8_t  fix;
-    uint32_t date;
-    uint32_t time;
-    uint16_t hdop;
-    uint16_t vdop;
+    uint32_t iTOW;         // mSec
+    uint16_t year;         // years
+    uint8_t  month;        // months
+    uint8_t  day;          // days
+    uint16_t hDop;
+    uint16_t vDop;
+    uint8_t  updated;
 } gps_t;
 
 extern gps_t gps;

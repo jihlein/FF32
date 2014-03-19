@@ -382,8 +382,8 @@ void ubloxParseData(void)
 
     	else if (ubloxId == 4)   // NAV:DOP
         {
-        	gps.hdop = ubloxMessage.nav_dop.hDOP;
-        	gps.vdop = ubloxMessage.nav_dop.vDOP;
+        	gps.hDop = ubloxMessage.nav_dop.hDOP;
+        	gps.vDop = ubloxMessage.nav_dop.vDOP;
 		}
 
     	///////////////////////////////
@@ -409,14 +409,10 @@ void ubloxParseData(void)
 
     	else if (ubloxId == 33)  // NAV:TIMEUTC
         {
-        	gps.time = (ubloxMessage.nav_timeutc.hour  * 10000 +
-			            ubloxMessage.nav_timeutc.min   * 100   +
-			            ubloxMessage.nav_timeutc.sec        )  +
-			           (ubloxMessage.nav_timeutc.nano) * 0.000000001f;
-
-        	gps.date = ubloxMessage.nav_timeutc.day   * 10000 +
-			           ubloxMessage.nav_timeutc.month * 100   +
-			           ubloxMessage.nav_timeutc.year  - 2000;
+        	gps.iTOW  = ubloxMessage.nav_timeutc.iTOW;
+        	gps.year  = ubloxMessage.nav_timeutc.year;
+			gps.month = ubloxMessage.nav_timeutc.month;
+            gps.day   = ubloxMessage.nav_timeutc.day;
 		}
 
     	///////////////////////////////
@@ -549,4 +545,19 @@ uint8_t decodeUbloxMsg(void)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Check GPS Updated
+///////////////////////////////////////////////////////////////////////////////
 
+static uint32_t previousGPSiTOW = 0;
+
+void gpsUpdated(void)
+{
+	if (gps.iTOW != previousGPSiTOW)
+	    gps.updated = true;
+	else
+	    gps.updated = false;
+
+	previousGPSiTOW = gps.iTOW;
+}
+
+///////////////////////////////////////////////////////////////////////////////
