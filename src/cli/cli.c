@@ -349,7 +349,7 @@ void cliCom(void)
         case 'n': // GPS Data
            	cliPrintF("%12ld, %12ld, %12ld, %4d, %4d\n", gps.latitude,
            			                                     gps.longitude,
-           			                                     gps.altitude,
+           			                                     gps.hMSL,
            			                                     gps.fix,
            			                                     gps.numSats);
            	validCliCommand = false;
@@ -744,6 +744,8 @@ void cliCom(void)
         ///////////////////////////////
 
         case 'Y': // Not Used
+            computeGeoMagElements();
+
             cliQuery = 'x';
             break;
 

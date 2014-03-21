@@ -136,7 +136,8 @@ typedef struct gps_t
 {
 	int32_t  latitude;     // 1e-7 degrees
 	int32_t  longitude;    // 1e-7 degrees
-	int32_t  altitude;     // mm
+	int32_t  height;       // mm above ellipsoid
+	int32_t  hMSL;         // mm above mean sea level
 	int32_t  velN;         // cm/s
 	int32_t  velE;         // cm/s
 	int32_t  velD;         // cm/s

@@ -130,7 +130,7 @@ void mavlinkSendGpsRaw(void)
 							     gps.fix,                         // uint8_t            fix_type,
 							     gps.latitude,                    // int32_t            lat,
 							     gps.longitude,                   // int32_t            lon,
-							     gps.altitude,                    // int32_t            alt,
+							     gps.hMSL,                        // int32_t            alt,
 							     gps.hDop,                        // uint16_t           eph,
 							     gps.vDop,                        // uint16_t           epv,
 							     gps.gSpeed,                      // uint16_t           vel,

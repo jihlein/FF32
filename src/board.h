@@ -98,6 +98,8 @@
 #include "evr.h"
 #include "firstOrderFilter.h"
 #include "flightCommand.h"
+#include "geoMagElements.h"
+#include "GeomagnetismHeader.h"
 #include "gps.h"
 #include "MargAHRS.h"
 #include "magCalibration.h"

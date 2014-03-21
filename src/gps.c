@@ -368,7 +368,8 @@ void ubloxParseData(void)
         {
         	gps.latitude  = ubloxMessage.nav_posllh.lat;
         	gps.longitude = ubloxMessage.nav_posllh.lon;
-        	gps.altitude  = ubloxMessage.nav_posllh.height;
+        	gps.height    = ubloxMessage.nav_posllh.height;
+        	gps.hMSL      = ubloxMessage.nav_posllh.hMSL;
         }
 
     	///////////////////////////////
