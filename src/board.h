@@ -88,7 +88,8 @@
 #include "mpu6000.h"
 #include "ms5611_I2C.h"
 
-#include "accelCalibration.h"
+#include "accelCalibrationMPU.h"
+#include "accelCalibrationMXR.h"
 #include "batMon.h"
 #include "cli.h"
 #include "computeAxisCommands.h"

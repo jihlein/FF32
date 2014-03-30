@@ -75,36 +75,46 @@ void sensorCLI()
 
                 if (eepromConfig.useMXR9150 == true)
                 {
-                	cliPrintF("MXR Accel Bias:            %9.4f, %9.4f, %9.4f\n",   eepromConfig.accelBiasMXR[XAXIS],
-				                                                		            eepromConfig.accelBiasMXR[YAXIS],
-				                                                		            eepromConfig.accelBiasMXR[ZAXIS]);
-				    cliPrintF("MXR Accel Scale Factor:    %9.4f, %9.4f, %9.4f\n",   eepromConfig.accelScaleFactorMXR[XAXIS],
-								                                                    eepromConfig.accelScaleFactorMXR[YAXIS],
-				                                                		            eepromConfig.accelScaleFactorMXR[ZAXIS]);
+                	cliPrintF("MXR Accel Bias:            %9.3f, %9.3f, %9.3f\n", eepromConfig.accelBiasMXR[XAXIS],
+				                                                		          eepromConfig.accelBiasMXR[YAXIS],
+				                                                		          eepromConfig.accelBiasMXR[ZAXIS]);
+				    cliPrintF("MXR Accel Scale Factor:    %9.7f, %9.7f, %9.7f\n", eepromConfig.accelScaleFactorMXR[XAXIS],
+								                                                  eepromConfig.accelScaleFactorMXR[YAXIS],
+				                                                		          eepromConfig.accelScaleFactorMXR[ZAXIS]);
                 }
-                cliPrintF("Accel Temp Comp Slope:     %9.4f, %9.4f, %9.4f\n",   eepromConfig.accelTCBiasSlope[XAXIS],
-                                                		                        eepromConfig.accelTCBiasSlope[YAXIS],
-                                                		                        eepromConfig.accelTCBiasSlope[ZAXIS]);
-                cliPrintF("Accel Temp Comp Bias:      %9.4f, %9.4f, %9.4f\n",   eepromConfig.accelTCBiasIntercept[XAXIS],
-                                                		                        eepromConfig.accelTCBiasIntercept[YAXIS],
-                                                		                        eepromConfig.accelTCBiasIntercept[ZAXIS]);
-                cliPrintF("Gyro Temp Comp Slope:      %9.4f, %9.4f, %9.4f\n",   eepromConfig.gyroTCBiasSlope[ROLL ],
-                                                                		        eepromConfig.gyroTCBiasSlope[PITCH],
-                                                                		        eepromConfig.gyroTCBiasSlope[YAW  ]);
-                cliPrintF("Gyro Temp Comp Intercept:  %9.4f, %9.4f, %9.4f\n",   eepromConfig.gyroTCBiasIntercept[ROLL ],
-                                                                   		        eepromConfig.gyroTCBiasIntercept[PITCH],
-                                                                   		        eepromConfig.gyroTCBiasIntercept[YAW  ]);
-                cliPrintF("Mag Bias:                  %9.4f, %9.4f, %9.4f\n",   eepromConfig.magBias[XAXIS],
-                                                   		                        eepromConfig.magBias[YAXIS],
-                                                   		                        eepromConfig.magBias[ZAXIS]);
-                cliPrintF("Accel One G:               %9.4f\n",   accelOneG);
-                cliPrintF("Accel Cutoff:              %9.4f\n",   eepromConfig.accelCutoff);
-                cliPrintF("KpAcc (MARG):              %9.4f\n",   eepromConfig.KpAcc);
-                cliPrintF("KiAcc (MARG):              %9.4f\n",   eepromConfig.KiAcc);
-                cliPrintF("KpMag (MARG):              %9.4f\n",   eepromConfig.KpMag);
-                cliPrintF("KiMag (MARG):              %9.4f\n",   eepromConfig.KiMag);
-                cliPrintF("hdot est/h est Comp Fil A: %9.4f\n",   eepromConfig.compFilterA);
-                cliPrintF("hdot est/h est Comp Fil B: %9.4f\n",   eepromConfig.compFilterB);
+                else
+                {
+                	cliPrintF("MPU Accel Bias:            %9.3f, %9.3f, %9.3f\n", eepromConfig.accelBiasMPU[XAXIS],
+				                                                		          eepromConfig.accelBiasMPU[YAXIS],
+				                                                		          eepromConfig.accelBiasMPU[ZAXIS]);
+				    cliPrintF("MPU Accel Scale Factor:    %9.7f, %9.7f, %9.7f\n", eepromConfig.accelScaleFactorMPU[XAXIS],
+								                                                  eepromConfig.accelScaleFactorMPU[YAXIS],
+				                                                		          eepromConfig.accelScaleFactorMPU[ZAXIS]);
+                }
+
+                cliPrintF("Accel Temp Comp Slope:     %9.4f, %9.4f, %9.4f\n", eepromConfig.accelTCBiasSlope[XAXIS],
+                                                		                      eepromConfig.accelTCBiasSlope[YAXIS],
+                                                		                      eepromConfig.accelTCBiasSlope[ZAXIS]);
+                cliPrintF("Accel Temp Comp Bias:      %9.4f, %9.4f, %9.4f\n", eepromConfig.accelTCBiasIntercept[XAXIS],
+                                                		                      eepromConfig.accelTCBiasIntercept[YAXIS],
+                                                		                      eepromConfig.accelTCBiasIntercept[ZAXIS]);
+                cliPrintF("Gyro Temp Comp Slope:      %9.4f, %9.4f, %9.4f\n", eepromConfig.gyroTCBiasSlope[ROLL ],
+                                                                		      eepromConfig.gyroTCBiasSlope[PITCH],
+                                                                		      eepromConfig.gyroTCBiasSlope[YAW  ]);
+                cliPrintF("Gyro Temp Comp Intercept:  %9.4f, %9.4f, %9.4f\n", eepromConfig.gyroTCBiasIntercept[ROLL ],
+                                                                   		      eepromConfig.gyroTCBiasIntercept[PITCH],
+                                                                   		      eepromConfig.gyroTCBiasIntercept[YAW  ]);
+                cliPrintF("Mag Bias:                  %9.4f, %9.4f, %9.4f\n", eepromConfig.magBias[XAXIS],
+                                                   		                      eepromConfig.magBias[YAXIS],
+                                                   		                      eepromConfig.magBias[ZAXIS]);
+                cliPrintF("Accel One G:               %9.4f\n", accelOneG);
+                cliPrintF("Accel Cutoff:              %9.4f\n", eepromConfig.accelCutoff);
+                cliPrintF("KpAcc (MARG):              %9.4f\n", eepromConfig.KpAcc);
+                cliPrintF("KiAcc (MARG):              %9.4f\n", eepromConfig.KiAcc);
+                cliPrintF("KpMag (MARG):              %9.4f\n", eepromConfig.KpMag);
+                cliPrintF("KiMag (MARG):              %9.4f\n", eepromConfig.KiMag);
+                cliPrintF("hdot est/h est Comp Fil A: %9.4f\n", eepromConfig.compFilterA);
+                cliPrintF("hdot est/h est Comp Fil B: %9.4f\n", eepromConfig.compFilterB);
 
                 cliPrint("MPU6000 DLPF:                 ");
                 switch(eepromConfig.dlpfSetting)
@@ -134,8 +144,8 @@ void sensorCLI()
                 else
                 	cliPrint("Vertical Velocity and Altitude Hold\n\n");
 
-                cliPrintF("Voltage Monitor Scale:     %9.4f\n", eepromConfig.voltageMonitorScale);
-                cliPrintF("Voltage Monitor Bias:      %9.4f\n", eepromConfig.voltageMonitorBias);
+                cliPrintF("Voltage Monitor Scale:     %9.4f\n",    eepromConfig.voltageMonitorScale);
+                cliPrintF("Voltage Monitor Bias:      %9.4f\n",    eepromConfig.voltageMonitorBias);
                 cliPrintF("Number of Battery Cells:      %1d\n\n", eepromConfig.batteryCells);
 
                 cliPrintF("Battery Low Setpoint:      %4.2f volts\n",   eepromConfig.batteryLow);
@@ -165,11 +175,11 @@ void sensorCLI()
 
             ///////////////////////////
 
-            case 'd': // MXR9150 Bias and Scale Factor Calibration
+            case 'd': // Accel Bias and Scale Factor Calibration
                 if (eepromConfig.useMXR9150 == true)
-                	accelCalibration();
+                	accelCalibrationMXR();
                 else
-                	cliPrintF("Function not available....\n");
+                	accelCalibrationMPU();
 
                 sensorQuery = 'a';
                 validQuery = true;
@@ -216,6 +226,17 @@ void sensorCLI()
                 sensorQuery = 'a';
                 validQuery = true;
                 break;
+
+            ///////////////////////////
+
+            case 'h': // MXR Bias
+            	eepromConfig.accelBiasMXR[XAXIS] = readFloatCLI();
+            	eepromConfig.accelBiasMXR[YAXIS] = readFloatCLI();
+            	eepromConfig.accelBiasMXR[ZAXIS] = readFloatCLI();
+
+            	sensorQuery = 'a';
+            	validQuery = true;
+            	break;
 
             ///////////////////////////
 

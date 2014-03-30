@@ -248,8 +248,8 @@ void computeMPU6000RTData(void)
     uint8_t  axis;
     uint16_t samples;
 
-    double accelSum[3] = { 0.0, 0.0, 0.0 };
-    double gyroSum[3]  = { 0.0, 0.0, 0.0 };
+    float accelSum[3] = { 0.0, 0.0, 0.0 };
+    float gyroSum[3]  = { 0.0, 0.0, 0.0 };
 
     mpu6000Calibrating = true;
 
@@ -261,15 +261,15 @@ void computeMPU6000RTData(void)
 
         if (eepromConfig.useMXR9150 == true)
         {
-        	accelSum[XAXIS] += (double)((mxr9150XAxis() - eepromConfig.accelBiasMXR[XAXIS]) * eepromConfig.accelScaleFactorMXR[XAXIS]);
-   	        accelSum[YAXIS] += (double)((mxr9150YAxis() - eepromConfig.accelBiasMXR[YAXIS]) * eepromConfig.accelScaleFactorMXR[YAXIS]);
-   	        accelSum[ZAXIS] += (double)((mxr9150ZAxis() - eepromConfig.accelBiasMXR[ZAXIS]) * eepromConfig.accelScaleFactorMXR[ZAXIS]);
+        	accelSum[XAXIS] += (mxr9150XAxis() - eepromConfig.accelBiasMXR[XAXIS]) * eepromConfig.accelScaleFactorMXR[XAXIS];
+   	        accelSum[YAXIS] += (mxr9150YAxis() - eepromConfig.accelBiasMXR[YAXIS]) * eepromConfig.accelScaleFactorMXR[YAXIS];
+   	        accelSum[ZAXIS] += (mxr9150ZAxis() - eepromConfig.accelBiasMXR[ZAXIS]) * eepromConfig.accelScaleFactorMXR[ZAXIS];
         }
         else
         {
-        	accelSum[XAXIS] += (double)(((float)rawAccel[XAXIS].value - accelTCBias[XAXIS]) * ACCEL_SCALE_FACTOR);
-        	accelSum[YAXIS] += (double)(((float)rawAccel[YAXIS].value - accelTCBias[YAXIS]) * ACCEL_SCALE_FACTOR);
-        	accelSum[ZAXIS] += (double)(((float)rawAccel[ZAXIS].value - accelTCBias[ZAXIS]) * ACCEL_SCALE_FACTOR);
+        	accelSum[XAXIS] += ((float)rawAccel[XAXIS].value - accelTCBias[XAXIS]) * ACCEL_SCALE_FACTOR;
+        	accelSum[YAXIS] += ((float)rawAccel[YAXIS].value - accelTCBias[YAXIS]) * ACCEL_SCALE_FACTOR;
+        	accelSum[ZAXIS] += ((float)rawAccel[ZAXIS].value - accelTCBias[ZAXIS]) * ACCEL_SCALE_FACTOR;
         }
 
         gyroSum[ROLL ]  += (double)((float)rawGyro[ROLL ].value - gyroTCBias[ROLL ]);

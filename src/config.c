@@ -43,7 +43,7 @@
 
 const char rcChannelLetters[] = "AERT1234";
 
-static uint8_t checkNewEEPROMConf = 1;
+static uint8_t checkNewEEPROMConf = 2;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -190,9 +190,21 @@ void checkFirstTime(bool eepromReset)
 
 	    ///////////////////////////////
 
-        eepromConfig.accelBiasMXR[XAXIS]        = 2048.0f;
-        eepromConfig.accelBiasMXR[YAXIS]        = 2048.0f;
-        eepromConfig.accelBiasMXR[ZAXIS]        = 2048.0f;
+        eepromConfig.accelBiasMPU[XAXIS] = 0.0f;
+        eepromConfig.accelBiasMPU[YAXIS] = 0.0f;
+        eepromConfig.accelBiasMPU[ZAXIS] = 0.0f;
+
+        ///////////////////////////////
+
+        eepromConfig.accelScaleFactorMPU[XAXIS] = 0.00119708f;  // (1/8192) * 9.8065  (8192 LSB = 1 G)
+        eepromConfig.accelScaleFactorMPU[YAXIS] = 0.00119708f;  // (1/8192) * 9.8065  (8192 LSB = 1 G)
+        eepromConfig.accelScaleFactorMPU[ZAXIS] = 0.00119708f;  // (1/8192) * 9.8065  (8192 LSB = 1 G)
+
+	    ///////////////////////////////
+
+        eepromConfig.accelBiasMXR[XAXIS] = 2048.0f;
+        eepromConfig.accelBiasMXR[YAXIS] = 2048.0f;
+        eepromConfig.accelBiasMXR[ZAXIS] = 2048.0f;
 
         ///////////////////////////////
 

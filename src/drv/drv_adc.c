@@ -182,30 +182,30 @@ void adcInit(void)
 //  MXR9150 X Axis
 ///////////////////////////////////////////////////////////////////////////////
 
-float mxr9150XAxis()
+float mxr9150XAxis(void)
 {
 	uint8_t i;
-	uint16_t adcSum = 0;
+	float   adcSum = 0.0f;
 
 	for (i = ADC_PIN_2_CONVERTED_VALUE; i < ADC_PIN_2_CONVERTED_VALUE + 13; i += 3)
 	    adcSum += adc2ConvertedValues[i];
 
-	return (float)adcSum / 5.0f;
+	return adcSum / 5.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 //  MXR9150 Y Axis
 ///////////////////////////////////////////////////////////////////////////////
 
-float mxr9150YAxis()
+float mxr9150YAxis(void)
 {
 	uint8_t i;
-	uint16_t adcSum = 0;
+	float   adcSum = 0.0f;
 
 	for (i = ADC_PIN_3_CONVERTED_VALUE; i < ADC_PIN_3_CONVERTED_VALUE + 13; i += 3)
 	    adcSum += adc2ConvertedValues[i];
 
-	return (float)adcSum / 5.0f;
+	return adcSum / 5.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -215,12 +215,12 @@ float mxr9150YAxis()
 float mxr9150ZAxis(void)
 {
 	uint8_t i;
-	uint16_t adcSum = 0;
+	float   adcSum = 0.0f;
 
 	for (i = ADC_PIN_4_CONVERTED_VALUE; i < ADC_PIN_4_CONVERTED_VALUE + 13; i += 3)
 	    adcSum += adc2ConvertedValues[i];
 
-	return (float)adcSum / 5.0f;
+	return adcSum / 5.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

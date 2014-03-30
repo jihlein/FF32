@@ -226,7 +226,7 @@ void initUBLOX(void)
     // and GPS board will not be possible.  GPS configuration command sets 38400
     // baud.  NEO-6M defaults to 9600 baud if config pins are left floating.
 
-    for (i = 0; i < sizeof(initBaudRates); i++)
+    for (i = 0; i < (sizeof(initBaudRates) / sizeof(initBaudRates[0])); i++)
     {
     	USART_InitStructure.USART_BaudRate = initBaudRates[i];
 
@@ -234,7 +234,7 @@ void initUBLOX(void)
 
     	gpsPrintBinary(ubloxPortConfig38p4, sizeof(ubloxPortConfig38p4));
 
-    	delay(50);  // Delay so DMA buffer can be completely sent
+    	delay(50);  // Delay so DMA buffer can be completely sent before trying next baud rate
     }
 
 	USART_InitStructure.USART_BaudRate = 38400;

@@ -41,20 +41,24 @@
 // Accelerometer Calibration
 ///////////////////////////////////////////////////////////////////////////////
 
-void accelCalibration(void)
+void accelCalibrationMXR(void)
 {
-    double noseUpMXR        = 0.0f;
-	double noseDownMXR      = 0.0f;
-	double leftWingDownMXR  = 0.0f;
-	double rightWingDownMXR = 0.0f;
-	double upSideDownMXR    = 0.0f;
-    double rightSideUpMXR   = 0.0f;
+    float noseUp        = 0.0f;
+	float noseDown      = 0.0f;
+	float leftWingDown  = 0.0f;
+	float rightWingDown = 0.0f;
+	float upSideDown    = 0.0f;
+    float rightSideUp   = 0.0f;
+
+    float xBias         = 0.0f;
+    float yBias         = 0.0f;
+    float zBias         = 0.0f;
 
     int16_t index;
 
     accelCalibrating = true;
 
-    cliPrint("\nAccelerometer Calibration:\n\n");
+    cliPrint("\nMXR9150 Accelerometer Calibration:\n\n");
 
     ///////////////////////////////////
 
@@ -68,11 +72,15 @@ void accelCalibration(void)
 
     for (index = 0; index < 5000; index++)
     {
-        rightSideUpMXR += mxr9150ZAxis();
+        rightSideUp += mxr9150ZAxis();
+
+        xBias += mxr9150XAxis();
+        yBias += mxr9150YAxis();
+
         delayMicroseconds(1000);
     }
 
-    rightSideUpMXR /= 5000.0;
+    rightSideUp /= 5000.0f;
 
     cliPrint("Place accelerometer up side down\n");
     cliPrint("  Send a character when ready to proceed\n\n");
@@ -84,16 +92,16 @@ void accelCalibration(void)
 
     for (index = 0; index < 5000; index++)
     {
-        upSideDownMXR += mxr9150ZAxis();
+        upSideDown += mxr9150ZAxis();
+
+        xBias += mxr9150XAxis();
+        yBias += mxr9150YAxis();
+
         delayMicroseconds(1000);
     }
 
-    upSideDownMXR /= 5000.0;
+    upSideDown /= 5000.0f;
 
-    eepromConfig.accelBiasMXR[ZAXIS] = (float)((rightSideUpMXR + upSideDownMXR) / 2.0);
-
-    eepromConfig.accelScaleFactorMXR[ZAXIS] = (float)((2.0 * 9.8065) / (abs(rightSideUpMXR - eepromConfig.accelBiasMXR[ZAXIS]) +
-    		                                                            abs(upSideDownMXR  - eepromConfig.accelBiasMXR[ZAXIS])));
     ///////////////////////////////////
 
     cliPrint("Place accelerometer left edge down\n");
@@ -106,11 +114,14 @@ void accelCalibration(void)
 
     for (index = 0; index < 5000; index++)
     {
-        leftWingDownMXR += mxr9150YAxis();
+        leftWingDown += mxr9150YAxis();
+
+        zBias += mxr9150ZAxis();
+
         delayMicroseconds(1000);
     }
 
-    leftWingDownMXR /= 5000.0;
+    leftWingDown /= 5000.0f;
 
     cliPrint("Place accelerometer right edge down\n");
     cliPrint("  Send a character when ready to proceed\n\n");
@@ -122,16 +133,15 @@ void accelCalibration(void)
 
     for (index = 0; index < 5000; index++)
     {
-        rightWingDownMXR += mxr9150YAxis();
+        rightWingDown += mxr9150YAxis();
+
+        zBias += mxr9150ZAxis();
+
         delayMicroseconds(1000);
     }
 
-    rightWingDownMXR /= 5000.0;
+    rightWingDown /= 5000.0f;
 
-    eepromConfig.accelBiasMXR[YAXIS] = (float)((leftWingDownMXR + rightWingDownMXR) / 2.0);
-
-    eepromConfig.accelScaleFactorMXR[YAXIS] = (float)((2.0 * 9.8065) / (abs(leftWingDownMXR  - eepromConfig.accelBiasMXR[YAXIS]) +
-    		                                                            abs(rightWingDownMXR - eepromConfig.accelBiasMXR[YAXIS])));
     ///////////////////////////////////
 
     cliPrint("Place accelerometer rear edge down\n");
@@ -144,11 +154,14 @@ void accelCalibration(void)
 
     for (index = 0; index < 5000; index++)
     {
-        noseUpMXR += mxr9150XAxis();
+        noseUp += mxr9150XAxis();
+
+        zBias += mxr9150ZAxis();
+
         delayMicroseconds(1000);
     }
 
-    noseUpMXR /= 5000.0;
+    noseUp /= 5000.0f;
 
     cliPrint("Place accelerometer front edge down\n");
     cliPrint("  Send a character when ready to proceed\n\n");
@@ -160,19 +173,31 @@ void accelCalibration(void)
 
     for (index = 0; index < 5000; index++)
     {
-        noseDownMXR += mxr9150XAxis();
+        noseDown += mxr9150XAxis();
+
+        zBias += mxr9150ZAxis();
+
         delayMicroseconds(1000);
     }
 
-    noseDownMXR /= 5000.0;
+    noseDown /= 5000.0f;
 
-    eepromConfig.accelBiasMXR[XAXIS] = (float)((noseUpMXR + noseDownMXR) / 2.0);
-
-    eepromConfig.accelScaleFactorMXR[XAXIS] = (float)((2.0 * 9.8065) / (abs(noseUpMXR   - eepromConfig.accelBiasMXR[XAXIS]) +
-    		                                                            abs(noseDownMXR - eepromConfig.accelBiasMXR[XAXIS])));
     ///////////////////////////////////
 
-    accelCalibrating = false;
+    eepromConfig.accelBiasMXR[ZAXIS]        = zBias / 20000.0f;
+    eepromConfig.accelScaleFactorMXR[ZAXIS] = (2.0f * 9.8065f) / fabsf(rightSideUp - upSideDown);
+
+
+    eepromConfig.accelBiasMXR[YAXIS]        = yBias / 10000.0f;
+    eepromConfig.accelScaleFactorMXR[YAXIS] = (2.0f * 9.8065f) / fabsf(leftWingDown - rightWingDown);
+
+
+    eepromConfig.accelBiasMXR[XAXIS]        = xBias / 10000.0f;
+    eepromConfig.accelScaleFactorMXR[XAXIS] = (2.0f * 9.8065f) / fabsf(noseUp - noseDown);
+
+    ///////////////////////////////////
+
+	accelCalibrating = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

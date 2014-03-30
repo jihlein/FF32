@@ -274,8 +274,8 @@ void cliCom(void)
         case 'g': // 100 Hz Accels
         	if (eepromConfig.useMXR9150 == true)
         		cliPrintF("%9.4f, %9.4f, %9.4f, %9.4f, %9.4f, %9.4f\n", sensors.accel100Hz[XAXIS],
-        			                                                    sensors.accel100Hz[YAXIS],
-        			                                                    sensors.accel100Hz[ZAXIS],
+        				                                                sensors.accel100Hz[YAXIS],
+        				                                                sensors.accel100Hz[ZAXIS],
         			                                                    sensors.accel100HzMXR[XAXIS],
         			                                                    sensors.accel100HzMXR[YAXIS],
         			                                                    sensors.accel100HzMXR[ZAXIS]);
@@ -520,10 +520,10 @@ void cliCom(void)
         ///////////////////////////////
 
         case 'z':
-            cliPrintF("%9.4f, %9.4f, %9.4f, %9.4f\n", mxr9150XAxis(),
-                                                      mxr9150YAxis(),
-                                                      mxr9150ZAxis(),
-                                                      voltageMonitor());
+            cliPrintF("%9ld, %9ld, %9ld, %9.4f\n", mxr9150XAxis(),
+                                                   mxr9150YAxis(),
+                                                   mxr9150ZAxis(),
+                                                   voltageMonitor());
             break;
 
         ///////////////////////////////

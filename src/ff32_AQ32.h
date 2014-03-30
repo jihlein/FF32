@@ -227,6 +227,9 @@ typedef struct eepromConfig_t
 
     uint8_t version;
 
+    float accelBiasMPU[3];          // Bias for MPU60x0 Accel
+    float accelScaleFactorMPU[3];   // Scale factor for MPU60x0 Accel
+
     float accelBiasMXR[3];          // Bias for MXR9150 Accel
     float accelScaleFactorMXR[3];   // Scale factor for MXR9150 Accel
 
