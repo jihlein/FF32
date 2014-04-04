@@ -51,6 +51,8 @@ heading_t      heading;
 
 gps_t          gps;
 
+homeData_t     homeData;
+
 uint16_t       timerValue;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -178,9 +180,9 @@ int main(void)
 
             if (newMagData == true)
             {
-                sensors.mag10Hz[XAXIS] =   (float)rawMag[XAXIS].value * magScaleFactor[XAXIS] - eepromConfig.magBias[XAXIS];
-                sensors.mag10Hz[YAXIS] =   (float)rawMag[YAXIS].value * magScaleFactor[YAXIS] - eepromConfig.magBias[YAXIS];
-                sensors.mag10Hz[ZAXIS] = -((float)rawMag[ZAXIS].value * magScaleFactor[ZAXIS] - eepromConfig.magBias[ZAXIS]);
+                sensors.mag10Hz[XAXIS] =   (float)rawMag[XAXIS].value * magScaleFactor[XAXIS + eepromConfig.externalHMC5883] - eepromConfig.magBias[XAXIS + eepromConfig.externalHMC5883];
+                sensors.mag10Hz[YAXIS] =   (float)rawMag[YAXIS].value * magScaleFactor[YAXIS + eepromConfig.externalHMC5883] - eepromConfig.magBias[YAXIS + eepromConfig.externalHMC5883];
+                sensors.mag10Hz[ZAXIS] = -((float)rawMag[ZAXIS].value * magScaleFactor[ZAXIS + eepromConfig.externalHMC5883] - eepromConfig.magBias[ZAXIS + eepromConfig.externalHMC5883]);
 
                 newMagData = false;
                 magDataUpdate = true;
@@ -390,8 +392,12 @@ int main(void)
             deltaTime5Hz    = currentTime - previous5HzTime;
             previous5HzTime = currentTime;
 
-            if (execUp == true)
-                BLUE_LED_TOGGLE;
+            gpsUpdated();
+
+            if (eepromConfig.mavlinkEnabled == true)
+            {
+				mavlinkSendGpsRaw();
+			}
 
 			if (batMonVeryLowWarning > 0)
 			{
@@ -399,12 +405,8 @@ int main(void)
 				batMonVeryLowWarning--;
 			}
 
-            gpsUpdated();
-
-            if (eepromConfig.mavlinkEnabled == true)
-            {
-				mavlinkSendGpsRaw();
-			}
+            if (execUp == true)
+                BLUE_LED_TOGGLE;
 
 			executionTime5Hz = micros() - currentTime;
         }
@@ -428,7 +430,10 @@ int main(void)
             if ((execUpCount == 5) && (execUp == false))
             {
                 execUp = true;
+
                 pwmEscInit();
+
+                homeData.magHeading = sensors.attitude500Hz[YAW];
             }
 
 			if (batMonLowWarning > 0)
@@ -440,7 +445,7 @@ int main(void)
             if (eepromConfig.mavlinkEnabled == true)
             {
 				mavlinkSendHeartbeat();
-				mavlinkSendBattery();
+				mavlinkSendSysStatus();
 			}
 
             executionTime1Hz = micros() - currentTime;

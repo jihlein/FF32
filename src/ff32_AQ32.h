@@ -152,10 +152,24 @@ typedef struct gps_t
     uint8_t  day;          // days
     uint16_t hDop;
     uint16_t vDop;
+    uint8_t  numCh;
+    uint8_t  chn[50];      // channel number
+    uint8_t  svid[50];     // satellite ID
+    uint8_t  cno[50];      // carrier to noise ratio (signal strength)
     uint8_t  updated;
 } gps_t;
 
 extern gps_t gps;
+
+typedef struct homeData_t
+{
+	int32_t latitude;
+	int32_t longitude;
+	float   altitude;
+	float   magHeading;
+} homeData_t;
+
+extern homeData_t homeData;
 
 ///////////////////////////////////////////////////////////////////////////////
 // PID Definitions
@@ -239,7 +253,7 @@ typedef struct eepromConfig_t
     float gyroTCBiasSlope[3];
     float gyroTCBiasIntercept[3];
 
-    float magBias[3];
+    float magBias[6];
 
     float accelCutoff;
 
@@ -304,10 +318,6 @@ typedef struct eepromConfig_t
     ///////////////////////////////////
 
     PIDdata_t PID[NUMBER_OF_PIDS];
-
-    ///////////////////////////////////
-
-    float   magVar;                // + east, - west
 
     ///////////////////////////////////
 

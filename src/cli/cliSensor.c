@@ -104,9 +104,12 @@ void sensorCLI()
                 cliPrintF("Gyro Temp Comp Intercept:  %9.4f, %9.4f, %9.4f\n", eepromConfig.gyroTCBiasIntercept[ROLL ],
                                                                    		      eepromConfig.gyroTCBiasIntercept[PITCH],
                                                                    		      eepromConfig.gyroTCBiasIntercept[YAW  ]);
-                cliPrintF("Mag Bias:                  %9.4f, %9.4f, %9.4f\n", eepromConfig.magBias[XAXIS],
+                cliPrintF("Internal Mag Bias:         %9.4f, %9.4f, %9.4f\n", eepromConfig.magBias[XAXIS],
                                                    		                      eepromConfig.magBias[YAXIS],
                                                    		                      eepromConfig.magBias[ZAXIS]);
+                cliPrintF("External Mag Bias:         %9.4f, %9.4f, %9.4f\n", eepromConfig.magBias[XAXIS + 3],
+                                                   		                      eepromConfig.magBias[YAXIS + 3],
+                                                   		                      eepromConfig.magBias[ZAXIS + 3]);
                 cliPrintF("Accel One G:               %9.4f\n", accelOneG);
                 cliPrintF("Accel Cutoff:              %9.4f\n", eepromConfig.accelCutoff);
                 cliPrintF("KpAcc (MARG):              %9.4f\n", eepromConfig.KpAcc);
@@ -132,12 +135,6 @@ void sensorCLI()
                         cliPrint("42 Hz\n");
                         break;
                 }
-
-                cliPrint("Magnetic Variation:           ");
-                if (eepromConfig.magVar >= 0.0f)
-                  cliPrintF("E%6.4f\n\n",  eepromConfig.magVar * R2D);
-                else
-                  cliPrintF("W%6.4f\n\n", -eepromConfig.magVar * R2D);
 
                 if (eepromConfig.verticalVelocityHoldOnly)
                 	cliPrint("Vertical Velocity Hold Only\n\n");
@@ -188,10 +185,10 @@ void sensorCLI()
             ///////////////////////////
 
             case 'e': // Toggle External HMC5883 Use
-                if (eepromConfig.externalHMC5883)
-                	eepromConfig.externalHMC5883 = false;
+                if (eepromConfig.externalHMC5883 == 0)
+                	eepromConfig.externalHMC5883 = 3;
                 else
-               	    eepromConfig.externalHMC5883 = true;
+               	    eepromConfig.externalHMC5883 = 0;
 
                 initMag();
 
@@ -336,15 +333,6 @@ void sensorCLI()
 
             ///////////////////////////
 
-            case 'M': // Magnetic Variation
-                eepromConfig.magVar = readFloatCLI() * D2R;
-
-                sensorQuery = 'a';
-                validQuery = true;
-                break;
-
-            ///////////////////////////
-
             case 'N': // Set Voltage Monitor Trip Points
                 eepromConfig.batteryLow     = readFloatCLI();
                 eepromConfig.batteryVeryLow = readFloatCLI();
@@ -389,7 +377,6 @@ void sensorCLI()
 			   	cliPrint("'e' Toggle External HMC5883 State          'E' Set h dot est/h est Comp Filter A/B  EA;B\n");
 			   	cliPrint("'f' Toggle External MS5611 State\n");
 			   	cliPrint("'g' Toggle MXR9150 Use\n");
-			   	cliPrint("                                           'M' Set Mag Variation (+ East, - West)   MMagVar\n");
 			   	cliPrint("                                           'N' Set Voltage Monitor Trip Points      Nlow;veryLow;maxLow\n");
 			   	cliPrint("'v' Toggle Vertical Velocity Hold Only     'V' Set Voltage Monitor Parameters       Vscale;bias;cells\n");
 			   	cliPrint("                                           'W' Write EEPROM Parameters\n");

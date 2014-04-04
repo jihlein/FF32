@@ -267,22 +267,22 @@ void computeMPU6000RTData(void)
         }
         else
         {
-        	accelSum[XAXIS] += ((float)rawAccel[XAXIS].value - accelTCBias[XAXIS]) * ACCEL_SCALE_FACTOR;
-        	accelSum[YAXIS] += ((float)rawAccel[YAXIS].value - accelTCBias[YAXIS]) * ACCEL_SCALE_FACTOR;
-        	accelSum[ZAXIS] += ((float)rawAccel[ZAXIS].value - accelTCBias[ZAXIS]) * ACCEL_SCALE_FACTOR;
+        	accelSum[XAXIS] += ((float)rawAccel[XAXIS].value - eepromConfig.accelBiasMPU[XAXIS] - accelTCBias[XAXIS]) * eepromConfig.accelScaleFactorMPU[XAXIS];
+        	accelSum[YAXIS] += ((float)rawAccel[YAXIS].value - eepromConfig.accelBiasMPU[YAXIS] - accelTCBias[YAXIS]) * eepromConfig.accelScaleFactorMPU[YAXIS];
+        	accelSum[ZAXIS] += ((float)rawAccel[ZAXIS].value - eepromConfig.accelBiasMPU[ZAXIS] - accelTCBias[ZAXIS]) * eepromConfig.accelScaleFactorMPU[ZAXIS];
         }
 
-        gyroSum[ROLL ]  += (double)((float)rawGyro[ROLL ].value - gyroTCBias[ROLL ]);
-        gyroSum[PITCH]  += (double)((float)rawGyro[PITCH].value - gyroTCBias[PITCH]);
-        gyroSum[YAW  ]  += (double)((float)rawGyro[YAW  ].value - gyroTCBias[YAW  ]);
+        gyroSum[ROLL ] += (float)rawGyro[ROLL ].value - gyroTCBias[ROLL ];
+        gyroSum[PITCH] += (float)rawGyro[PITCH].value - gyroTCBias[PITCH];
+        gyroSum[YAW  ] += (float)rawGyro[YAW  ].value - gyroTCBias[YAW  ];
 
         delayMicroseconds(1000);
     }
 
     for (axis = 0; axis < 3; axis++)
     {
-        accelSum[axis]   = accelSum[axis] / 5000.0;
-        gyroRTBias[axis] = (float)(gyroSum[axis]  / 5000.0);
+        accelSum[axis]   = accelSum[axis] / 5000.0f;
+        gyroRTBias[axis] = gyroSum[axis]  / 5000.0f;
     }
 
     accelOneG = (float)(sqrt(SQR(accelSum[XAXIS]) + SQR(accelSum[YAXIS]) + SQR(accelSum[ZAXIS])));

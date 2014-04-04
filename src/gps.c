@@ -161,6 +161,14 @@ static uint8_t ubloxInitData[] = {0xB5,0x62,            // Header             Tu
                                   0x01,                 // Rate         1
                                   0x2D,0x85,            // CK_A, CK_B
 
+                                  0xB5,0x62,            // Header             Turn On UBLOX NAV-SVINFO Msg
+                                  0x06,0x01,            // ID
+                                  0x03,0x00,            // Length
+                                  0x01,                 // Msg Class    NAV
+                                  0x30,                 // Msg ID       SVINFO
+                                  0x05,                 // Rate         5
+                                  0x40,0xA7,            // CK_A, CK_B
+
                                   0xB5,0x62,            // Header             Setup SBAS Mode
                                   0x06,0x16,            // ID
                                   0x08,0x00,            // Length
@@ -338,6 +346,15 @@ struct ublox_NAV_TIMEUTC  // 01 33 (20)
     uint8_t  valid;
 };
 
+struct ublox_NAV_SVINFO  // 01 48 (608, 8 + 12 * numCh, numCh = 50)
+{
+	uint32_t iTOW;        // mSec
+	uint8_t  numCh;       // number of channels
+	uint8_t  globalFlags; // bitmask
+	uint16_t reserved2;   // reserved
+    uint8_t  svinfo[600];
+};
+
 union ublox_message
 {
     struct ublox_NAV_POSLLH  nav_posllh;
@@ -346,7 +363,8 @@ union ublox_message
     struct ublox_NAV_VELNED  nav_velned;
     struct ublox_NAV_SOL     nav_sol;
     struct ublox_NAV_TIMEUTC nav_timeutc;
-    unsigned char raw[52];
+    struct ublox_NAV_SVINFO  nav_svinfo;
+    unsigned char raw[608];
 }   ubloxMessage;
 
 uint8_t ubloxExpectedDataLength;
@@ -360,6 +378,8 @@ uint8_t ubloxCKA,ubloxCKB;
 
 void ubloxParseData(void)
 {
+    uint8_t n;
+
     if (ubloxClass == 1)         // NAV
     {
         ///////////////////////////////
@@ -417,6 +437,20 @@ void ubloxParseData(void)
 		}
 
     	///////////////////////////////
+
+    	else if (ubloxId == 48)  // NAV:SVINFO
+    	{
+			gps.numCh = ubloxMessage.nav_svinfo.numCh;
+
+			for (n = 0; n < gps.numCh; n++)
+			{
+				gps.chn[n]  = ubloxMessage.nav_svinfo.svinfo[0 + 12 * n];
+				gps.svid[n] = ubloxMessage.nav_svinfo.svinfo[1 + 12 * n];
+				gps.cno[n]  = ubloxMessage.nav_svinfo.svinfo[4 + 12 * n];
+			}
+		}
+
+		///////////////////////////////
     }
 }
 
