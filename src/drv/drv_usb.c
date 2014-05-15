@@ -40,6 +40,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 uint8_t usbDeviceConfigured = false;
+uint8_t usbDeviceConnected  = false;
 
 __ALIGN_BEGIN USB_OTG_CORE_HANDLE    USB_OTG_dev __ALIGN_END;
 
@@ -47,17 +48,19 @@ __ALIGN_BEGIN USB_OTG_CORE_HANDLE    USB_OTG_dev __ALIGN_END;
 
 enum { expandEvr = 1 };
 
-void cliListenerCB(evr_t e)
+void usbListenerCB(evr_t e)
 {
     if (expandEvr)
-        cliPrintF("EVR-%s %8.3fs %s (%04x)\n", evrToSeverityStr(e.evr), (float)e.time/1000., evrToStr(e.evr), e.reason);
+        usbPrintF("EVR-%s %8.3fs %s (%04X)\n", evrToSeverityStr(e.evr), (float)e.time/1000., evrToStr(e.evr), e.reason);
     else
-        cliPrintF("EVR:%08x %04x %04x\n", e.time, e.evr, e.reason);
+        usbPrintF("EVR:%08X %04X %04X\n", e.time, e.evr, e.reason);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// USB Initialization
+///////////////////////////////////////////////////////////////////////////////
 
-void cliInit(void)
+void usbInit(void)
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
 
@@ -77,12 +80,14 @@ void cliInit(void)
 
 	USBD_Init(&USB_OTG_dev,	USB_OTG_FS_CORE_ID, &USR_desc, &USBD_CDC_cb, &USR_cb);
 
-	evrRegisterListener(cliListenerCB);
+	evrRegisterListener(usbListenerCB);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// USB Available
+///////////////////////////////////////////////////////////////////////////////
 
-uint8_t cliAvailable(void)
+uint32_t usbAvailable(void)
 {
     if (cdc_RX_IsCharReady() == -1)
     	return(true);
@@ -91,18 +96,22 @@ uint8_t cliAvailable(void)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// USB Read
+///////////////////////////////////////////////////////////////////////////////
 
-char cliRead(void)
+uint8_t usbRead(void)
 {
     if (usbDeviceConfigured == true)
-        return cdc_RX_GetChar();
+        return (uint8_t)cdc_RX_GetChar();
     else
         return(0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// USB Print
+///////////////////////////////////////////////////////////////////////////////
 
-void cliPrint(char* str)
+void usbPrint(char* str)
 {
 	if (usbDeviceConfigured == true)
 	{
@@ -111,11 +120,11 @@ void cliPrint(char* str)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// CLI Print Formatted - Print formatted string to USB VCP
+// USB Print Formatted - Print formatted string to USB VCP
 // From Ala42
 ///////////////////////////////////////////////////////////////////////////////
 
-void cliPrintF(const char * fmt, ...)
+void usbPrintF(const char * fmt, ...)
 {
 	char buf[256];
 
@@ -123,8 +132,46 @@ void cliPrintF(const char * fmt, ...)
 	va_start (vlist, fmt);
 
 	vsnprintf(buf, sizeof(buf) - 1, fmt, vlist);
-	cliPrint(buf);
+	usbPrint(buf);
 	va_end(vlist);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// USB Print Binary String
+///////////////////////////////////////////////////////////////////////////////
+
+void usbPrintBinary(uint8_t *buf, uint16_t length)
+{
+	if (usbDeviceConfigured == true)
+	{
+		cdc_DataTx((unsigned char*)buf, length);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Check USB Active
+///////////////////////////////////////////////////////////////////////////////
+
+void checkUsbActive(void)
+{
+	if (usbDeviceConfigured)
+	{
+		cliPortAvailable       = &usbAvailable;
+		cliPortPrint           = &usbPrint;
+		cliPortPrintF          = &usbPrintF;
+		cliPortRead            = &usbRead;
+
+	    mavlinkPortPrintBinary = &usbPrintBinary;
+	}
+	else
+	{
+		cliPortAvailable       = &uart1Available;
+		cliPortPrint           = &uart1Print;
+		cliPortPrintF          = &uart1PrintF;
+		cliPortRead            = &uart1Read;
+
+		mavlinkPortPrintBinary = &uart1PrintBinary;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////

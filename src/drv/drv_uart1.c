@@ -45,115 +45,127 @@
 */
 
 ///////////////////////////////////////////////////////////////////////////////
-// UART2 Defines and Variables
+// UART1 Defines and Variables
 ///////////////////////////////////////////////////////////////////////////////
 
-#define UART2_TX_PIN        GPIO_Pin_5
-#define UART2_RX_PIN        GPIO_Pin_6
-#define UART2_GPIO          GPIOD
-#define UART2_TX_PINSOURCE  GPIO_PinSource5
-#define UART2_RX_PINSOURCE  GPIO_PinSource6
+#define UART1_TX_PIN        GPIO_Pin_9
+#define UART1_RX_PIN        GPIO_Pin_10
+#define UART1_GPIO          GPIOA
+#define UART1_TX_PINSOURCE  GPIO_PinSource9
+#define UART1_RX_PINSOURCE  GPIO_PinSource10
 
-#define UART2_BUFFER_SIZE    2048
+#define UART1_BUFFER_SIZE   2048
 
 // Receive buffer, circular DMA
-volatile uint8_t rx2Buffer[UART2_BUFFER_SIZE];
-uint32_t rx2DMAPos = 0;
+volatile uint8_t rx1Buffer[UART1_BUFFER_SIZE];
+uint32_t rx1DMAPos = 0;
 
-volatile uint8_t tx2Buffer[UART2_BUFFER_SIZE];
-volatile uint16_t tx2BufferTail = 0;
-volatile uint16_t tx2BufferHead = 0;
+volatile uint8_t tx1Buffer[UART1_BUFFER_SIZE];
+volatile uint16_t tx1BufferTail = 0;
+volatile uint16_t tx1BufferHead = 0;
 
-volatile uint8_t  tx2DmaEnabled = false;
+volatile uint8_t  tx1DmaEnabled = false;
 
 ///////////////////////////////////////////////////////////////////////////////
-// UART2 Transmit via DMA
+// UART1 Transmit via DMA
 ///////////////////////////////////////////////////////////////////////////////
 
-static void uart2TxDMA(void)
+static void uart1TxDMA(void)
 {
-	if ((tx2DmaEnabled == true) || (tx2BufferHead == tx2BufferTail))  // Ignore call if already active or no new data in buffer
-    	return;
+	if ((tx1DmaEnabled == true) || (tx1BufferHead == tx1BufferTail))  // Ignore call if already active or no new data in buffer
+        return;
 
-    DMA1_Stream6->M0AR = (uint32_t)&tx2Buffer[tx2BufferTail];
+    DMA2_Stream7->M0AR = (uint32_t)&tx1Buffer[tx1BufferTail];
 
-    if (tx2BufferHead > tx2BufferTail)
+    if (tx1BufferHead > tx1BufferTail)
     {
-	    DMA_SetCurrDataCounter(DMA1_Stream6, tx2BufferHead - tx2BufferTail);
-	    tx2BufferTail = tx2BufferHead;
+	    DMA_SetCurrDataCounter(DMA2_Stream7, tx1BufferHead - tx1BufferTail);
+	    tx1BufferTail = tx1BufferHead;
     }
     else
     {
-	    DMA_SetCurrDataCounter(DMA1_Stream6, UART2_BUFFER_SIZE - tx2BufferTail);
-	    tx2BufferTail = 0;
+	    DMA_SetCurrDataCounter(DMA2_Stream7, UART1_BUFFER_SIZE - tx1BufferTail);
+	    tx1BufferTail = 0;
     }
 
-    tx2DmaEnabled = true;
+    tx1DmaEnabled = true;
 
-    DMA_Cmd(DMA1_Stream6, ENABLE);
+    DMA_Cmd(DMA2_Stream7, ENABLE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// UART2 TX Complete Interrupt Handler
+// UART1 TX Complete Interrupt Handler
 ///////////////////////////////////////////////////////////////////////////////
 
-void DMA1_Stream6_IRQHandler(void)
+void DMA2_Stream7_IRQHandler(void)
 {
-    DMA_ClearITPendingBit(DMA1_Stream6, DMA_IT_TCIF6);
+    DMA_ClearITPendingBit(DMA2_Stream7, DMA_IT_TCIF7);
 
-    tx2DmaEnabled = false;
+    tx1DmaEnabled = false;
 
-    uart2TxDMA();
+    uart1TxDMA();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Initialization
+// UART1 Initialization
 ///////////////////////////////////////////////////////////////////////////////
 
-void gpsInit(void)
+enum { expandEvr = 0 };
+
+void uart1ListenerCB(evr_t e)
+{
+    if (expandEvr)
+        uart1PrintF("EVR-%s %8.3fs %s (%04X)\n", evrToSeverityStr(e.evr), (float)e.time/1000., evrToStr(e.evr), e.reason);
+    else
+        uart1PrintF("EVR:%08X %04X %04X\n", e.time, e.evr, e.reason);
+}
+
+///////////////////////////////////////
+
+void uart1Init(void)
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
     DMA_InitTypeDef   DMA_InitStructure;
     NVIC_InitTypeDef  NVIC_InitStructure;
 
-    GPIO_InitStructure.GPIO_Pin   = UART2_TX_PIN | UART2_RX_PIN;
+    GPIO_PinAFConfig(UART1_GPIO, UART1_TX_PINSOURCE, GPIO_AF_USART1);
+    GPIO_PinAFConfig(UART1_GPIO, UART1_RX_PINSOURCE, GPIO_AF_USART1);
+
+    GPIO_InitStructure.GPIO_Pin   = UART1_TX_PIN | UART1_RX_PIN;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
 
-    GPIO_PinAFConfig(UART2_GPIO, UART2_TX_PINSOURCE, GPIO_AF_USART2);
-    GPIO_PinAFConfig(UART2_GPIO, UART2_RX_PINSOURCE, GPIO_AF_USART2);
-
-    GPIO_Init(UART2_GPIO, &GPIO_InitStructure);
+    GPIO_Init(UART1_GPIO, &GPIO_InitStructure);
 
     // DMA TX Interrupt
-    NVIC_InitStructure.NVIC_IRQChannel                   = DMA1_Stream6_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannel                   = DMA2_Stream7_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
 
     NVIC_Init(&NVIC_InitStructure);
 
-    USART_InitStructure.USART_BaudRate            = 9600;
+    USART_InitStructure.USART_BaudRate            = 115200;
     USART_InitStructure.USART_WordLength          = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits            = USART_StopBits_1;
     USART_InitStructure.USART_Parity              = USART_Parity_No;
     USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 
-    USART_Init(USART2, &USART_InitStructure);
+    USART_Init(USART1, &USART_InitStructure);
 
     // Receive DMA into a circular buffer
 
-    DMA_DeInit(DMA1_Stream5);
+    DMA_DeInit(DMA2_Stream5);
 
     DMA_InitStructure.DMA_Channel            = DMA_Channel_4;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
-    DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)rx2Buffer;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART1->DR;
+    DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)rx1Buffer;
     DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralToMemory;
-    DMA_InitStructure.DMA_BufferSize         = UART2_BUFFER_SIZE;
+    DMA_InitStructure.DMA_BufferSize         = UART1_BUFFER_SIZE;
     DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
     DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
@@ -165,22 +177,22 @@ void gpsInit(void)
     DMA_InitStructure.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
 
-    DMA_Init(DMA1_Stream5, &DMA_InitStructure);
+    DMA_Init(DMA2_Stream5, &DMA_InitStructure);
 
-    DMA_Cmd(DMA1_Stream5, ENABLE);
+    DMA_Cmd(DMA2_Stream5, ENABLE);
 
-    USART_DMACmd(USART2, USART_DMAReq_Rx, ENABLE);
+    USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
 
-    rx2DMAPos = DMA_GetCurrDataCounter(DMA1_Stream5);
+    rx1DMAPos = DMA_GetCurrDataCounter(DMA2_Stream5);
 
     // Transmit DMA
-    DMA_DeInit(DMA1_Stream6);
+    DMA_DeInit(DMA2_Stream7);
 
   //DMA_InitStructure.DMA_Channel            = DMA_Channel_4;
-  //DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
-    DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)tx2Buffer;
+  //DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART1->DR;
+    DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)tx1Buffer;
     DMA_InitStructure.DMA_DIR                = DMA_DIR_MemoryToPeripheral;
-  //DMA_InitStructure.DMA_BufferSize         = UART2_BUFFER_SIZE;
+  //DMA_InitStructure.DMA_BufferSize         = UART_BUFFER_SIZE;
   //DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
   //DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
   //DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
@@ -192,119 +204,138 @@ void gpsInit(void)
   //DMA_InitStructure.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
   //DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
 
-    DMA_Init(DMA1_Stream6, &DMA_InitStructure);
+    DMA_Init(DMA2_Stream7, &DMA_InitStructure);
 
-    DMA_SetCurrDataCounter(DMA1_Stream6, 0);
+    DMA_SetCurrDataCounter(DMA2_Stream7, 0);
 
-    DMA_ITConfig(DMA1_Stream6, DMA_IT_TC, ENABLE);
+    DMA_ITConfig(DMA2_Stream7, DMA_IT_TC, ENABLE);
 
-    USART_DMACmd(USART2, USART_DMAReq_Tx, ENABLE);
+    USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
 
-    USART_Cmd(USART2, ENABLE);
+    USART_Cmd(USART1, ENABLE);
+
+    evrRegisterListener(uart1ListenerCB);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Available
+// UART1 Available
 ///////////////////////////////////////////////////////////////////////////////
 
-uint16_t gpsAvailable(void)
+uint32_t uart1Available(void)
 {
-    return (DMA_GetCurrDataCounter(DMA1_Stream5) != rx2DMAPos) ? true : false;
+    return (DMA_GetCurrDataCounter(DMA2_Stream5) != rx1DMAPos) ? true : false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Clear Buffer
+// UART1 Clear Buffer
 ///////////////////////////////////////////////////////////////////////////////
 
-void gpsClearBuffer(void)
+void uart1ClearBuffer(void)
 {
-    rx2DMAPos = DMA_GetCurrDataCounter(DMA1_Stream5);
+    rx1DMAPos = DMA_GetCurrDataCounter(DMA2_Stream5);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Number of Characters Available
+// UART1 Number of Characters Available
 ///////////////////////////////////////////////////////////////////////////////
 
-uint16_t gpsNumCharsAvailable(void)
+uint16_t uart1NumCharsAvailable(void)
 {
 	int32_t number;
 
-	number = rx2DMAPos - DMA_GetCurrDataCounter(DMA1_Stream5);
+	number = rx1DMAPos - DMA_GetCurrDataCounter(DMA2_Stream5);
 
 	if (number >= 0)
 	    return (uint16_t)number;
 	else
-	    return (uint16_t)(UART2_BUFFER_SIZE + number);
+	    return (uint16_t)(UART1_BUFFER_SIZE + number);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Read
+// UART1 Read
 ///////////////////////////////////////////////////////////////////////////////
 
-uint8_t gpsRead(void)
+uint8_t uart1Read(void)
 {
     uint8_t ch;
 
-    ch = rx2Buffer[UART2_BUFFER_SIZE - rx2DMAPos];
+    ch = rx1Buffer[UART1_BUFFER_SIZE - rx1DMAPos];
     // go back around the buffer
-    if (--rx2DMAPos == 0)
-	    rx2DMAPos = UART2_BUFFER_SIZE;
+    if (--rx1DMAPos == 0)
+	    rx1DMAPos = UART1_BUFFER_SIZE;
 
     return ch;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Read Poll
+// UART1 Read Poll
 ///////////////////////////////////////////////////////////////////////////////
 
-uint8_t gpsReadPoll(void)
+uint8_t uart1ReadPoll(void)
 {
-    while (!gpsAvailable()); // wait for some bytes
-    return gpsRead();
+    while (!uart1Available()); // wait for some bytes
+    return uart1Read();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Write
+// UART1 Write
 ///////////////////////////////////////////////////////////////////////////////
 
-void gpsWrite(uint8_t ch)
+void uart1Write(uint8_t ch)
 {
-    tx2Buffer[tx2BufferHead] = ch;
-    tx2BufferHead = (tx2BufferHead + 1) % UART2_BUFFER_SIZE;
+    tx1Buffer[tx1BufferHead] = ch;
+    tx1BufferHead = (tx1BufferHead + 1) % UART1_BUFFER_SIZE;
 
-    uart2TxDMA();
+    uart1TxDMA();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Print
+// UART1 Print
 ///////////////////////////////////////////////////////////////////////////////
 
-void gpsPrint(char *str)
+void uart1Print(char *str)
 {
     while (*str)
     {
-    	tx2Buffer[tx2BufferHead] = *str++;
-    	tx2BufferHead = (tx2BufferHead + 1) % UART2_BUFFER_SIZE;
+    	tx1Buffer[tx1BufferHead] = *str++;
+    	tx1BufferHead = (tx1BufferHead + 1) % UART1_BUFFER_SIZE;
     }
 
-	uart2TxDMA();
+	uart1TxDMA();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GPS Print Binary String
+// UART1 Print Formatted - Print formatted string to UART1
+// From Ala42
 ///////////////////////////////////////////////////////////////////////////////
 
-void gpsPrintBinary(uint8_t *buf, uint16_t length)
+void uart1PrintF(const char * fmt, ...)
+{
+	char buf[256];
+
+	va_list  vlist;
+	va_start (vlist, fmt);
+
+	vsnprintf(buf, sizeof(buf), fmt, vlist);
+	uart1Print(buf);
+	va_end(vlist);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// UART1 Print Binary String
+///////////////////////////////////////////////////////////////////////////////
+
+void uart1PrintBinary(uint8_t *buf, uint16_t length)
 {
     uint16_t i;
 
    for (i = 0; i < length; i++)
     {
-    	tx2Buffer[tx2BufferHead] = buf[i];
-    	tx2BufferHead = (tx2BufferHead + 1) % UART2_BUFFER_SIZE;
+    	tx1Buffer[tx1BufferHead] = buf[i];
+    	tx1BufferHead = (tx1BufferHead + 1) % UART1_BUFFER_SIZE;
     }
 
-	uart2TxDMA();
+	uart1TxDMA();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

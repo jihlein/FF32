@@ -399,11 +399,6 @@ void slaveSpektrumFrameLost(void)
 
 void USART6_IRQHandler(void)
 {
-    if (((USART6->CR1 & USART_CR1_TXEIE) != 0) && ((USART6->SR & USART_SR_TXE) != 0))
-    {
-        USART6->CR1 &= ~USART_CR1_TXEIE;
-    }
-
     if (((USART6->CR1 & USART_CR1_RXNEIE) != 0) && ((USART6->SR & USART_SR_RXNE) != 0))
     {
         uint8_t b = USART_ReceiveData(USART6);
@@ -418,11 +413,6 @@ void USART6_IRQHandler(void)
 
 void UART4_IRQHandler(void)
 {
-    if (((UART4->CR1 & USART_CR1_TXEIE) != 0) && ((UART4->SR & USART_SR_TXE) != 0))
-	{
-        UART4->CR1 &= ~USART_CR1_TXEIE;
-    }
-
     if (((UART4->CR1 & USART_CR1_RXNEIE) != 0) && ((UART4->SR & USART_SR_RXNE) != 0))
     {
         uint8_t b = USART_ReceiveData(UART4);
@@ -489,6 +479,16 @@ void spektrumInit(void)
 
     ///////////////////////////////////
 
+    // Turn off USART6 features used by DMA receive circular buffer
+
+    USART_DMACmd(USART6, USART_DMAReq_Rx, DISABLE);
+
+    DMA_Cmd(DMA2_Stream1, DISABLE);
+
+    DMA_DeInit(DMA2_Stream1);
+
+    ///////////////////////////////////
+
     NVIC_InitStructure.NVIC_IRQChannel                   = USART6_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
@@ -509,7 +509,7 @@ void spektrumInit(void)
     USART_InitStructure.USART_WordLength          = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits            = USART_StopBits_1;
     USART_InitStructure.USART_Parity              = USART_Parity_No;
-    USART_InitStructure.USART_Mode                = USART_Mode_Rx;
+    USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;  // Don't mistakenly clear TX mode for UART6
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 
     USART_Init(USART6, &USART_InitStructure);

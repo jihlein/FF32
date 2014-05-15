@@ -66,23 +66,24 @@
 
 #include "pid.h"
 
-#include "ff32_AQ32.h"
+#include "ff32.h"
 
 #include "drv_adc.h"
 #include "drv_agl_ppmRx.h"
-#include "drv_cli.h"
 #include "drv_crc.h"
 #include "drv_gpio.h"
-#include "drv_gps.h"
 #include "drv_i2c.h"
-#include "drv_openLog.h"
-#include "drv_pwmESC.h"
+#include "drv_pwmEsc.h"
 #include "drv_pwmServo.h"
 #include "drv_spektrum.h"
 #include "drv_spi.h"
 #include "drv_system.h"
-#include "drv_telemetry.h"
 #include "drv_timingFunctions.h"
+#include "drv_uart1.h"
+#include "drv_uart2.h"
+#include "drv_uart3.h"
+#include "drv_uart6.h"
+#include "drv_usb.h"
 
 #include "hmc5883.h"
 #include "mpu6000.h"
@@ -107,9 +108,8 @@
 #include "mavlinkStrings.h"
 #include "mixer.h"
 #include "mpu6000Calibration.h"
-#include "rfTelem.h"
 #include "utilities.h"
 #include "vertCompFilter.h"
-#include "watchDogs.h"
+#include "watchdogs.h"
 
 ///////////////////////////////////////////////////////////////////////////////

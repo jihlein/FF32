@@ -138,8 +138,8 @@ void SysTick_Handler(void)
 
         ///////////////////////////////
 
-        currentTime = micros();
-        deltaTime1000Hz = currentTime - previous1000HzTime;
+        currentTime        = micros();
+        deltaTime1000Hz    = currentTime - previous1000HzTime;
         previous1000HzTime = currentTime;
 
         readMPU6000();
@@ -309,7 +309,7 @@ void systemInit(void)
     // SysTick
     SysTick_Config(SystemCoreClock / 1000);
 
-    // Turn on peripherial clocks
+    // Turn on peripheral clocks
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2,   ENABLE);
 
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1,   ENABLE);
@@ -320,7 +320,6 @@ void systemInit(void)
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC,  ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD,  ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE,  ENABLE);
-
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1,   ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2,   ENABLE);
@@ -355,51 +354,73 @@ void systemInit(void)
 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  // 2 bits for pre-emption priority, 2 bits for subpriority
 
+	///////////////////////////////////
+
+	gpsPortClearBuffer       = &uart2ClearBuffer;
+    gpsPortNumCharsAvailable = &uart2NumCharsAvailable;
+    gpsPortPrintBinary       = &uart2PrintBinary;
+    gpsPortRead              = &uart2Read;
+
+	openLogPortPrintF        = &uart6PrintF;
+
+	///////////////////////////////////
+
 	initMixer();
 
-    cliInit();
     gpioInit();
-    gpsInit();
-    openLogInit();
+
+    usbInit();
+
+    uart1Init();
+    uart2Init();
+    uart3Init();
+    uart6Init();
+
+    ///////////////////////////////////
 
     BLUE_LED_ON;
 
     delay(10000);  // 10 seconds of 20 second delay for sensor stabilization
 
-    #ifdef __VERSION__
-        cliPrintF("\ngcc version " __VERSION__ "\n");
+    ///////////////////////////////////
+
+	checkUsbActive();
+
+	#ifdef __VERSION__
+        cliPortPrintF("\ngcc version " __VERSION__ "\n");
     #endif
 
-    cliPrintF("\nFF32 Firmware V%s, Build Date " __DATE__ " "__TIME__" \n", __FF32_VERSION);
+    cliPortPrintF("\nFF32 Firmware V%s, Build Date " __DATE__ " "__TIME__" \n", __FF32_VERSION);
 
     if ((RCC->CR & RCC_CR_HSERDY) != RESET)
     {
-        cliPrint("\nRunning on external HSE clock....\n");
+        cliPortPrint("\nRunning on external HSE clock....\n");
     }
     else
     {
-        cliPrint("\nERROR: Running on internal HSI clock....\n");
+        cliPortPrint("\nERROR: Running on internal HSI clock....\n");
     }
 
     RCC_GetClocksFreq(&rccClocks);
 
-    cliPrintF("\nHCLK->   %3d MHz\n",   rccClocks.HCLK_Frequency   / 1000000);
-    cliPrintF(  "PCLK1->  %3d MHz\n",   rccClocks.PCLK1_Frequency  / 1000000);
-    cliPrintF(  "PCLK2->  %3d MHz\n",   rccClocks.PCLK2_Frequency  / 1000000);
-    cliPrintF(  "SYSCLK-> %3d MHz\n\n", rccClocks.SYSCLK_Frequency / 1000000);
+    cliPortPrintF("\nHCLK->   %3d MHz\n",   rccClocks.HCLK_Frequency   / 1000000);
+    cliPortPrintF(  "PCLK1->  %3d MHz\n",   rccClocks.PCLK1_Frequency  / 1000000);
+    cliPortPrintF(  "PCLK2->  %3d MHz\n",   rccClocks.PCLK2_Frequency  / 1000000);
+    cliPortPrintF(  "SYSCLK-> %3d MHz\n\n", rccClocks.SYSCLK_Frequency / 1000000);
 
     if (eepromConfig.receiverType == PPM)
-    	cliPrint("Using PPM Receiver....\n\n");
+    	cliPortPrint("Using PPM Receiver....\n\n");
     else
-    	cliPrint("Using Spektrum Satellite Receiver....\n\n");
+    	cliPortPrint("Using Spektrum Satellite Receiver....\n\n");
 
     initUBLOX();
 
     delay(10000);  // Remaining 10 seconds of 20 second delay for sensor stabilization - probably not long enough..
 
+    ///////////////////////////////////
+
     adcInit();
     agl_ppmRxInit();
-    batteryInit();
     i2cInit(I2C1);
     i2cInit(I2C2);
     pwmServoInit();
@@ -408,8 +429,10 @@ void systemInit(void)
         spektrumInit();
 
     spiInit(SPI3);
-    telemetryInit();
+
     timingFunctionsInit();
+
+    batteryInit();
 
     initFirstOrderFilter();
     initMavlink();
