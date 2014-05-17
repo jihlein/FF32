@@ -74,6 +74,7 @@ enum evrWarnList {
   EVR_BatLow,
   EVR_BatVeryLow,
   EVR_ConfigBadHistory,
+  EVR_SDCard_Failed,
   };
 
 ///////////////////////////////////////////////////////////////////////////////

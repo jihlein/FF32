@@ -24,6 +24,7 @@ constStrArr_t evrWarn = {
     "Battery Low",
     "Battery Very Low",
     "Config has CRC Bad History flag set! Use CLI to clear",
+    "SD Card Failed or Not Installed",
 };
 
 ///////////////////////////////////////////////////////////////////////////////

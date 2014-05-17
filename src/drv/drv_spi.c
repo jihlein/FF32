@@ -58,7 +58,6 @@
 // SPI Defines and Variables
 ///////////////////////////////////////////////////////////////////////////////
 
-#define SPI1_GPIO_CLOCK       RCC_AHB1Periph_GPIOA
 #define SPI1_GPIO             GPIOA
 #define SPI1_SCK_PIN          GPIO_Pin_5
 #define SPI1_SCK_PIN_SOURCE   GPIO_PinSource5
@@ -67,7 +66,6 @@
 #define SPI1_MOSI_PIN         GPIO_Pin_7
 #define SPI1_MOSI_PIN_SOURCE  GPIO_PinSource7
 
-#define SPI2_GPIO_CLOCK       RCC_AHB1Periph_GPIOB
 #define SPI2_GPIO             GPIOB
 #define SPI2_SCK_PIN          GPIO_Pin_13
 #define SPI2_SCK_PIN_SOURCE   GPIO_PinSource13
@@ -76,7 +74,6 @@
 #define SPI2_MOSI_PIN         GPIO_Pin_15
 #define SPI2_MOSI_PIN_SOURCE  GPIO_PinSource15
 
-#define SPI3_GPIO_CLOCK       RCC_AHB1Periph_GPIOC
 #define SPI3_GPIO             GPIOC
 #define SPI3_SCK_PIN          GPIO_Pin_10
 #define SPI3_SCK_PIN_SOURCE   GPIO_PinSource10
@@ -95,6 +92,62 @@ void spiInit(SPI_TypeDef *SPI)
 
     GPIO_InitTypeDef GPIO_InitStructure;
     SPI_InitTypeDef  SPI_InitStructure;
+
+    ///////////////////////////////////
+
+    if (SPI == SPI1)
+    {
+        GPIO_InitStructure.GPIO_Pin   = SD_CARD_CS_PIN;
+        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+        GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+
+        GPIO_Init(SD_CARD_CS_GPIO, &GPIO_InitStructure);
+
+        DISABLE_SD_CARD;
+
+        ///////////////////////////////
+
+        GPIO_PinAFConfig(SPI1_GPIO, SPI1_SCK_PIN_SOURCE,  GPIO_AF_SPI1);
+        GPIO_PinAFConfig(SPI1_GPIO, SPI1_MISO_PIN_SOURCE, GPIO_AF_SPI1);
+        GPIO_PinAFConfig(SPI1_GPIO, SPI1_MOSI_PIN_SOURCE, GPIO_AF_SPI1);
+
+        GPIO_StructInit(&GPIO_InitStructure);
+
+        // Init pins
+        GPIO_InitStructure.GPIO_Pin   = SPI1_SCK_PIN | SPI1_MISO_PIN | SPI1_MOSI_PIN;
+        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+        GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+
+        GPIO_Init(SPI1_GPIO, &GPIO_InitStructure);
+
+        ///////////////////////////////
+
+        SPI_I2S_DeInit(SPI1);
+
+        SPI_InitStructure.SPI_Direction         = SPI_Direction_2Lines_FullDuplex;
+        SPI_InitStructure.SPI_Mode              = SPI_Mode_Master;
+        SPI_InitStructure.SPI_DataSize          = SPI_DataSize_8b;
+        SPI_InitStructure.SPI_CPOL              = SPI_CPOL_Low;
+        SPI_InitStructure.SPI_CPHA              = SPI_CPHA_1Edge;
+        SPI_InitStructure.SPI_NSS               = SPI_NSS_Soft;
+        SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;  // 42/128 = 328.125 kHz SPI Clock
+        SPI_InitStructure.SPI_FirstBit          = SPI_FirstBit_MSB;
+        SPI_InitStructure.SPI_CRCPolynomial     = 7;
+
+        SPI_Init(SPI1, &SPI_InitStructure);
+
+        SPI_CalculateCRC(SPI1, DISABLE);
+
+        SPI_Cmd(SPI1, ENABLE);
+
+        while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+
+        dummyread = SPI_I2S_ReceiveData(SPI1);
+    }
 
     ///////////////////////////////////
 
