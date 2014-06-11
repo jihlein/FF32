@@ -321,7 +321,7 @@ int main(void)
             bodyAccelToEarthAccel();
             vertCompFilter(dt100Hz);
 
-            if (true) //(armed == true)
+            if (armed == true)
             {
 				if ( eepromConfig.activeTelemetry == 1 )
                 {

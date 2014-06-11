@@ -242,7 +242,7 @@ void receiverCLI()
 			   	cliPortPrint("                                           'C' Toggle Slave Spektrum State\n");
 			   	cliPortPrint("                                           'D' Set RC Control Points                DmidCmd;minChk;maxChk;minThrot;maxThrot\n");
 			   	cliPortPrint("                                           'E' Set Arm/Disarm Counts                EarmCount;disarmCount\n");
-			   	cliPortPrint("                                           'F' 'F' Set Maximum Rate Commands        FRP;Y RP = Roll/Pitch, Y = Yaw\n");
+			   	cliPortPrint("                                           'F' Set Maximum Rate Commands            FRP;Y RP = Roll/Pitch, Y = Yaw\n");
 			   	cliPortPrint("                                           'G' Set Maximum Attitude Command\n");
 			   	cliPortPrint("                                           'W' Write EEPROM Parameters\n");
 			   	cliPortPrint("'x' Exit Receiver CLI                      '?' Command Summary\n");

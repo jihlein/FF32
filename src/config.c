@@ -43,7 +43,7 @@
 
 const char rcChannelLetters[] = "AERT1234";
 
-static uint8_t checkNewEEPROMConf = 4;
+static uint8_t checkNewEEPROMConf = 5;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -324,6 +324,12 @@ void checkFirstTime(bool eepromReset)
 		eepromConfig.freeMix[5][ROLL ]    =  0.0f;
 		eepromConfig.freeMix[5][PITCH]    =  0.0f;
         eepromConfig.freeMix[5][YAW  ]    =  0.0f;
+
+        eepromConfig.rollAttAltCompensationGain   =  0.0f;
+        eepromConfig.rollAttAltCompensationLimit  = 20.0f * D2R;
+
+        eepromConfig.pitchAttAltCompensationGain  =  0.0f;
+        eepromConfig.pitchAttAltCompensationLimit = 20.0f * D2R;
 
         eepromConfig.midCommand   = 3000.0f;
         eepromConfig.minCheck     = (float)(MINCOMMAND + 200);

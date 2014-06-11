@@ -874,8 +874,8 @@ void cliCom(void)
             ///////////////////////////////
 
             case 'Z': // Not Used
-                cliQuery = 'x';
-                validCliCommand = false;
+
+            	cliQuery = 'x';
                 break;
 
             ///////////////////////////////

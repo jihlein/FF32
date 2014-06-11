@@ -123,8 +123,14 @@ void mixerCLI()
         	    			                                             eepromConfig.freeMix[index][YAW  ]);
         	        }
 
-        	        cliPortPrint("\n");
+        	        cliPortPrint("\n\n");
 			    }
+
+                cliPortPrintF("Roll Att Alt Compensation Limit:  %4.1f\n",   eepromConfig.rollAttAltCompensationLimit * R2D);
+                cliPortPrintF("Roll Att Alt Compensation Gain:   %4.1f\n\n", eepromConfig.rollAttAltCompensationGain);
+
+                cliPortPrintF("Pitch Att Alt Compensation Limit: %4.1f\n",   eepromConfig.pitchAttAltCompensationLimit * R2D);
+                cliPortPrintF("Pitch Att Alt Compensation Gain:  %4.1f\n\n", eepromConfig.pitchAttAltCompensationGain);
 
                 validQuery = false;
                 break;
@@ -321,6 +327,26 @@ void mixerCLI()
 
             ///////////////////////////
 
+            case 'U': // Roll Att Alt Compensation Limit and Gain
+            	eepromConfig.rollAttAltCompensationLimit = readFloatCLI() * D2R;
+                eepromConfig.rollAttAltCompensationGain  = readFloatCLI();
+
+               	mixerQuery = 'a';
+                validQuery = true;
+                break;
+
+            ///////////////////////////
+
+            case 'V': // PitchAtt Alt Compensation Limit and Gain
+            	eepromConfig.pitchAttAltCompensationLimit = readFloatCLI() * D2R;
+            	eepromConfig.pitchAttAltCompensationGain  = readFloatCLI();
+
+                mixerQuery = 'a';
+                validQuery = true;
+                break;
+
+            ///////////////////////////
+
             case 'W': // Write EEPROM Parameters
                 cliPortPrint("\nWriting EEPROM Parameters....\n\n");
                 writeEEPROM();
@@ -351,6 +377,8 @@ void mixerCLI()
    		        	cliPortPrint("                                           'K' Set FreeMix Matrix Element           KRow;Col;Value\n");
 			   	}
 
+   		        cliPortPrint("                                           'U' Roll Att Alt Comp Limit;Gain         UrLimit;rGain\n");
+   		        cliPortPrint("                                           'V' Pitch Att Alt Comp Limit;Gain        VpLimit;pGain\n");
    		        cliPortPrint("                                           'W' Write EEPROM Parameters\n");
    		        cliPortPrint("'x' Exit Mixer CLI                         '?' Command Summary\n");
    		        cliPortPrint("\n");

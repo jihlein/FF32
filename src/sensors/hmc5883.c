@@ -124,9 +124,9 @@ uint8_t readMag(void)
 void initMag(void)
 {
     uint8_t I2C_Buffer_Rx[1] = { 0 };
-    uint8_t i, j;
+    uint8_t i;
 
-    if (eepromConfig.externalHMC5883 == true)
+    if (eepromConfig.externalHMC5883 == 3)
     {
     	hmc5883I2C = I2C2;
     	hmc5883Address = 0x1E;
@@ -151,38 +151,42 @@ void initMag(void)
     {
     	i2cWrite(hmc5883I2C, hmc5883Address, HMC5883_MODE_REG, OP_MODE_SINGLE);
 
-        delay(20);
+        delay(50);
 
-        j = 100;
-
-        while (((I2C_Buffer_Rx[0] & STATUS_RDY) == 0x00 ) && (j > 0))
+        do
         {
-        	i2cRead(hmc5883I2C, hmc5883Address, HMC5883_STATUS_REG, 1, I2C_Buffer_Rx);
-        	j--;
-        }
+			delay(1);
+			i2cRead(hmc5883I2C, hmc5883Address, HMC5883_STATUS_REG, 1, I2C_Buffer_Rx);
+	    }
+		while ((I2C_Buffer_Rx[0] & STATUS_RDY) == 0x00);
 
-        readMag();
+        if (readMag())
+        {
+            magScaleFactor[XAXIS + eepromConfig.externalHMC5883] += (1.16f * 1090.0f) / (float)rawMag[XAXIS].value;
+            magScaleFactor[YAXIS + eepromConfig.externalHMC5883] += (1.16f * 1090.0f) / (float)rawMag[YAXIS].value;
+            magScaleFactor[ZAXIS + eepromConfig.externalHMC5883] += (1.08f * 1090.0f) / (float)rawMag[ZAXIS].value;
 
-        magScaleFactor[XAXIS + eepromConfig.externalHMC5883] += (1.16f * 1090.0f) / (float)rawMag[XAXIS].value;
-        magScaleFactor[YAXIS + eepromConfig.externalHMC5883] += (1.16f * 1090.0f) / (float)rawMag[YAXIS].value;
-        magScaleFactor[ZAXIS + eepromConfig.externalHMC5883] += (1.08f * 1090.0f) / (float)rawMag[ZAXIS].value;
+            I2C_Buffer_Rx[0] = 0;
+         }
+         else
+         {
+			 i--;
+		 }
+	 }
 
-        I2C_Buffer_Rx[0] = 0;
-    }
-
-    magScaleFactor[XAXIS + eepromConfig.externalHMC5883] = fabsf(magScaleFactor[XAXIS] / 10.0f);
-    magScaleFactor[YAXIS + eepromConfig.externalHMC5883] = fabsf(magScaleFactor[YAXIS] / 10.0f);
-    magScaleFactor[ZAXIS + eepromConfig.externalHMC5883] = fabsf(magScaleFactor[ZAXIS] / 10.0f);
+    magScaleFactor[XAXIS + eepromConfig.externalHMC5883] = fabsf(magScaleFactor[XAXIS + eepromConfig.externalHMC5883] / 10.0f);
+    magScaleFactor[YAXIS + eepromConfig.externalHMC5883] = fabsf(magScaleFactor[YAXIS + eepromConfig.externalHMC5883] / 10.0f);
+    magScaleFactor[ZAXIS + eepromConfig.externalHMC5883] = fabsf(magScaleFactor[ZAXIS + eepromConfig.externalHMC5883] / 10.0f);
 
     i2cWrite(hmc5883I2C, hmc5883Address, HMC5883_CONFIG_REG_A, SENSOR_CONFIG | NORMAL_MEASUREMENT_CONFIGURATION);
     delay(50);
 
     i2cWrite(hmc5883I2C, hmc5883Address, HMC5883_MODE_REG, OP_MODE_CONTINUOUS);
-    delay(20);
+    delay(50);
 
     readMag();
 
-    delay(20);
+    delay(50);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
