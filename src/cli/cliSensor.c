@@ -136,6 +136,25 @@ void sensorCLI()
                         break;
                 }
 
+                cliPortPrint("Sensor Orientation:           ");
+                switch(eepromConfig.sensorOrientation)
+                {
+                    case 1:
+                        cliPortPrint("Normal\n");
+                        break;
+                    case 2:
+                        cliPortPrint("Rotated 90 Degrees CW\n");
+                        break;
+                    case 3:
+                        cliPortPrint("Rotated 180 Degrees\n");
+                        break;
+                    case 4:
+                        cliPortPrint("Rotated 90 Degrees CCW\n");
+                        break;
+                    default:
+                        cliPortPrint("Normal\n");
+				}
+
                 if (eepromConfig.verticalVelocityHoldOnly)
                 	cliPortPrint("Vertical Velocity Hold Only\n\n");
                 else
@@ -333,6 +352,17 @@ void sensorCLI()
 
             ///////////////////////////
 
+            case 'F': // Sensor Orientation
+                eepromConfig.sensorOrientation = (uint8_t)readFloatCLI();
+
+                orientSensors();
+
+                sensorQuery = 'a';
+                validQuery = true;
+                break;
+
+             ///////////////////////////
+
             case 'N': // Set Voltage Monitor Trip Points
                 eepromConfig.batteryLow     = readFloatCLI();
                 eepromConfig.batteryVeryLow = readFloatCLI();
@@ -375,7 +405,7 @@ void sensorCLI()
 			   	cliPortPrint("'c' Magnetometer Calibration               'C' Set kpAcc/kiAcc                      CkpAcc;kiAcc\n");
 			   	cliPortPrint("'d' Accel Bias and SF Calibration          'D' Set kpMag/kiMag                      DkpMag;kiMag\n");
 			   	cliPortPrint("'e' Toggle External HMC5883 State          'E' Set h dot est/h est Comp Filter A/B  EA;B\n");
-			   	cliPortPrint("'f' Toggle External MS5611 State\n");
+			   	cliPortPrint("'f' Toggle External MS5611 State           'F' Set Sensor Orientation               F1 thru 4\n");
 			   	cliPortPrint("'g' Toggle MXR9150 Use\n");
 			   	cliPortPrint("                                           'N' Set Voltage Monitor Trip Points      Nlow;veryLow;maxLow\n");
 			   	cliPortPrint("'v' Toggle Vertical Velocity Hold Only     'V' Set Voltage Monitor Parameters       Vscale;bias;cells\n");

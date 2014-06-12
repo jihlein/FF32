@@ -150,6 +150,7 @@ typedef struct gps_t
 	int32_t  heading;      // deg 1e-5
     uint8_t  numSats;
     uint8_t  fix;
+    uint8_t  statusFlags;
     uint32_t iTOW;         // mSec
     uint16_t year;         // years
     uint8_t  month;        // months
@@ -160,7 +161,6 @@ typedef struct gps_t
     uint8_t  chn[50];      // channel number
     uint8_t  svid[50];     // satellite ID
     uint8_t  cno[50];      // carrier to noise ratio (signal strength)
-    uint8_t  updated;
 } gps_t;
 
 extern gps_t gps;
@@ -280,6 +280,8 @@ typedef struct eepromConfig_t
     float compFilterB;
 
     uint8_t dlpfSetting;
+
+    uint8_t sensorOrientation;
 
     ///////////////////////////////////
 

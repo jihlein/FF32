@@ -182,9 +182,9 @@ int main(void)
 
             if (newMagData == true)
             {
-                sensors.mag10Hz[XAXIS] =   (float)rawMag[XAXIS].value * magScaleFactor[XAXIS + eepromConfig.externalHMC5883] - eepromConfig.magBias[XAXIS + eepromConfig.externalHMC5883];
-                sensors.mag10Hz[YAXIS] =   (float)rawMag[YAXIS].value * magScaleFactor[YAXIS + eepromConfig.externalHMC5883] - eepromConfig.magBias[YAXIS + eepromConfig.externalHMC5883];
-                sensors.mag10Hz[ZAXIS] = -((float)rawMag[ZAXIS].value * magScaleFactor[ZAXIS + eepromConfig.externalHMC5883] - eepromConfig.magBias[ZAXIS + eepromConfig.externalHMC5883]);
+                sensors.mag10Hz[XAXIS] =   (float)rawMag[XAXIS].value * magScaleFactor[XAXIS] - eepromConfig.magBias[XAXIS + eepromConfig.externalHMC5883];
+                sensors.mag10Hz[YAXIS] =   (float)rawMag[YAXIS].value * magScaleFactor[YAXIS] - eepromConfig.magBias[YAXIS + eepromConfig.externalHMC5883];
+                sensors.mag10Hz[ZAXIS] = -((float)rawMag[ZAXIS].value * magScaleFactor[ZAXIS] - eepromConfig.magBias[ZAXIS + eepromConfig.externalHMC5883]);
 
                 newMagData = false;
                 magDataUpdate = true;
@@ -390,7 +390,10 @@ int main(void)
             deltaTime5Hz    = currentTime - previous5HzTime;
             previous5HzTime = currentTime;
 
-            gpsUpdated();
+            if (gpsValid() == true)
+            {
+
+			}
 
             //if (eepromConfig.mavlinkEnabled == true)
             //{

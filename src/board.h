@@ -89,6 +89,8 @@
 #include "hmc5883.h"
 #include "mpu6000.h"
 #include "ms5611_I2C.h"
+#include "orientation.h"
+#include "uBlox.h"
 
 #include "accelCalibrationMPU.h"
 #include "accelCalibrationMXR.h"

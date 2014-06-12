@@ -874,6 +874,15 @@ void cliCom(void)
             ///////////////////////////////
 
             case 'Z': // Not Used
+                if (usbDeviceConfigured == true)
+                    cliPortPrint("\nUSB Configured TRUE\n");
+                else
+                    cliPortPrint("\nUSB Configured FALSE\n");
+
+                if (usbDeviceConnected  == true)
+                    cliPortPrint("\nUSB Connected TRUE\n");
+                else
+                    cliPortPrint("\nUSB Connected FALSE\n");
 
             	cliQuery = 'x';
                 break;
