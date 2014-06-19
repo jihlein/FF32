@@ -189,7 +189,7 @@ void agl_ppmRxInit(void)
 
     ///////////////////////////////////
 
-    // PPM TIM1_CH4 PD14
+    // PPM TIM1_CH4 PE14
 
     if (eepromConfig.receiverType == PPM)
     {
@@ -242,6 +242,7 @@ void agl_ppmRxInit(void)
     if (eepromConfig.receiverType == PPM)
     {
 		TIM_ICInitStructure.TIM_Channel = TIM_Channel_4;
+
         TIM_ICInit(TIM1, &TIM_ICInitStructure);
 
         TIM_ITConfig(TIM1, TIM_IT_CC4, ENABLE);

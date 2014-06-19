@@ -63,6 +63,20 @@ int main(void)
 {
     ///////////////////////////////////////////////////////////////////////////
 
+    uint32_t currentTime;
+
+	arm_matrix_instance_f32 a;
+	arm_matrix_instance_f32 b;
+	arm_matrix_instance_f32 x;
+
+    systemReady = false;
+
+    systemInit();
+
+    systemReady = true;
+
+    evrPush(EVR_StartingMain, 0);
+
     #ifdef _DTIMING
 
         #define LA1_ENABLE       GPIO_SetBits(GPIOA,   GPIO_Pin_4)
@@ -116,14 +130,6 @@ int main(void)
         LA1_DISABLE;
 
     #endif
-
-    uint32_t currentTime;
-
-    systemInit();
-
-    systemReady = true;
-
-    evrPush(EVR_StartingMain, 0);
 
     while (1)
     {
@@ -182,12 +188,20 @@ int main(void)
 
             if (newMagData == true)
             {
-                sensors.mag10Hz[XAXIS] =   (float)rawMag[XAXIS].value * magScaleFactor[XAXIS] - eepromConfig.magBias[XAXIS + eepromConfig.externalHMC5883];
-                sensors.mag10Hz[YAXIS] =   (float)rawMag[YAXIS].value * magScaleFactor[YAXIS] - eepromConfig.magBias[YAXIS + eepromConfig.externalHMC5883];
-                sensors.mag10Hz[ZAXIS] = -((float)rawMag[ZAXIS].value * magScaleFactor[ZAXIS] - eepromConfig.magBias[ZAXIS + eepromConfig.externalHMC5883]);
+			    nonRotatedMagData[XAXIS] = (rawMag[XAXIS].value * magScaleFactor[XAXIS]) - eepromConfig.magBias[XAXIS + eepromConfig.externalHMC5883];
+			    nonRotatedMagData[YAXIS] = (rawMag[YAXIS].value * magScaleFactor[YAXIS]) - eepromConfig.magBias[YAXIS + eepromConfig.externalHMC5883];
+			    nonRotatedMagData[ZAXIS] = (rawMag[ZAXIS].value * magScaleFactor[ZAXIS]) - eepromConfig.magBias[ZAXIS + eepromConfig.externalHMC5883];
 
-                newMagData = false;
-                magDataUpdate = true;
+			    arm_mat_init_f32(&a, 3, 3, (float *)hmcOrientationMatrix);
+
+			    arm_mat_init_f32(&b, 3, 1, (float *)nonRotatedMagData);  // Sensor Coordinate Frame
+
+			    arm_mat_init_f32(&x, 3, 1,          sensors.mag10Hz);    // Body Coordinate Frame
+
+			    arm_mat_mult_f32(&a, &b, &x);
+
+				newMagData = false;
+			    magDataUpdate = true;
             }
 
             decodeUbloxMsg();
@@ -232,19 +246,43 @@ int main(void)
 
             computeMPU6000TCBias();
 
-            sensors.accel500Hz[XAXIS] =  ((float)accelSummedSamples500Hz[XAXIS] * 0.5f - eepromConfig.accelBiasMPU[XAXIS] - accelTCBias[XAXIS]) * eepromConfig.accelScaleFactorMPU[XAXIS];
-            sensors.accel500Hz[YAXIS] = -((float)accelSummedSamples500Hz[YAXIS] * 0.5f - eepromConfig.accelBiasMPU[YAXIS] - accelTCBias[YAXIS]) * eepromConfig.accelScaleFactorMPU[YAXIS];
-            sensors.accel500Hz[ZAXIS] = -((float)accelSummedSamples500Hz[ZAXIS] * 0.5f - eepromConfig.accelBiasMPU[ZAXIS] - accelTCBias[ZAXIS]) * eepromConfig.accelScaleFactorMPU[ZAXIS];
+            nonRotatedAccelData[XAXIS] = ((float)accelSummedSamples500Hz[XAXIS] * 0.5f - eepromConfig.accelBiasMPU[XAXIS] - accelTCBias[XAXIS]) * eepromConfig.accelScaleFactorMPU[XAXIS];
+            nonRotatedAccelData[YAXIS] = ((float)accelSummedSamples500Hz[YAXIS] * 0.5f - eepromConfig.accelBiasMPU[YAXIS] - accelTCBias[YAXIS]) * eepromConfig.accelScaleFactorMPU[YAXIS];
+            nonRotatedAccelData[ZAXIS] = ((float)accelSummedSamples500Hz[ZAXIS] * 0.5f - eepromConfig.accelBiasMPU[ZAXIS] - accelTCBias[ZAXIS]) * eepromConfig.accelScaleFactorMPU[ZAXIS];
 
-            sensors.gyro500Hz[ROLL ] =  ((float)gyroSummedSamples500Hz[ROLL ] * 0.5f - gyroRTBias[ROLL ] - gyroTCBias[ROLL ]) * GYRO_SCALE_FACTOR;
-            sensors.gyro500Hz[PITCH] = -((float)gyroSummedSamples500Hz[PITCH] * 0.5f - gyroRTBias[PITCH] - gyroTCBias[PITCH]) * GYRO_SCALE_FACTOR;
-            sensors.gyro500Hz[YAW  ] = -((float)gyroSummedSamples500Hz[YAW  ] * 0.5f - gyroRTBias[YAW  ] - gyroTCBias[YAW  ]) * GYRO_SCALE_FACTOR;
+		    arm_mat_init_f32(&a, 3, 3, (float *)mpuOrientationMatrix);
+
+		    arm_mat_init_f32(&b, 3, 1, (float *)nonRotatedAccelData);  // Sensor Coordinate Frame
+
+		    arm_mat_init_f32(&x, 3, 1,          sensors.accel500Hz);   // Body Coordinate Frame
+
+		    arm_mat_mult_f32(&a, &b, &x);
+
+            nonRotatedGyroData[ROLL ] = ((float)gyroSummedSamples500Hz[ROLL ] * 0.5f - gyroRTBias[ROLL ] - gyroTCBias[ROLL ]) * GYRO_SCALE_FACTOR;
+            nonRotatedGyroData[PITCH] = ((float)gyroSummedSamples500Hz[PITCH] * 0.5f - gyroRTBias[PITCH] - gyroTCBias[PITCH]) * GYRO_SCALE_FACTOR;
+            nonRotatedGyroData[YAW  ] = ((float)gyroSummedSamples500Hz[YAW  ] * 0.5f - gyroRTBias[YAW  ] - gyroTCBias[YAW  ]) * GYRO_SCALE_FACTOR;
+
+		    arm_mat_init_f32(&a, 3, 3, (float *)mpuOrientationMatrix);
+
+		    arm_mat_init_f32(&b, 3, 1, (float *)nonRotatedGyroData);  // Sensor Coordinate Frame
+
+		    arm_mat_init_f32(&x, 3, 1,          sensors.gyro500Hz);   // Body Coordinate Frame
+
+		    arm_mat_mult_f32(&a, &b, &x);
 
             if (eepromConfig.useMXR9150 == true)
             {
-            	sensors.accel500HzMXR[XAXIS] = -(accelSummedSamples500HzMXR[XAXIS] * 0.5f - eepromConfig.accelBiasMXR[XAXIS]) * eepromConfig.accelScaleFactorMXR[XAXIS];
-            	sensors.accel500HzMXR[YAXIS] = -(accelSummedSamples500HzMXR[YAXIS] * 0.5f - eepromConfig.accelBiasMXR[YAXIS]) * eepromConfig.accelScaleFactorMXR[YAXIS];
-            	sensors.accel500HzMXR[ZAXIS] =  (accelSummedSamples500HzMXR[ZAXIS] * 0.5f - eepromConfig.accelBiasMXR[ZAXIS]) * eepromConfig.accelScaleFactorMXR[ZAXIS];
+            	nonRotatedAccelData[XAXIS] = -(accelSummedSamples500HzMXR[XAXIS] * 0.5f - eepromConfig.accelBiasMXR[XAXIS]) * eepromConfig.accelScaleFactorMXR[XAXIS];
+            	nonRotatedAccelData[YAXIS] =  (accelSummedSamples500HzMXR[YAXIS] * 0.5f - eepromConfig.accelBiasMXR[YAXIS]) * eepromConfig.accelScaleFactorMXR[YAXIS];
+            	nonRotatedAccelData[ZAXIS] = -(accelSummedSamples500HzMXR[ZAXIS] * 0.5f - eepromConfig.accelBiasMXR[ZAXIS]) * eepromConfig.accelScaleFactorMXR[ZAXIS];
+
+		        arm_mat_init_f32(&a, 3, 3, (float *)mpuOrientationMatrix);
+
+		        arm_mat_init_f32(&b, 3, 1, (float *)nonRotatedAccelData);    // Sensor Coordinate Frame
+
+		        arm_mat_init_f32(&x, 3, 1,          sensors.accel500HzMXR);  // Body Coordinate Frame
+
+		        arm_mat_mult_f32(&a, &b, &x);
 
             	sensors.accel500HzMXR[XAXIS] = firstOrderFilter(sensors.accel500HzMXR[XAXIS], &firstOrderFilters[ACCEL500HZ_X_LOWPASS]);
                 sensors.accel500HzMXR[YAXIS] = firstOrderFilter(sensors.accel500HzMXR[YAXIS], &firstOrderFilters[ACCEL500HZ_Y_LOWPASS]);
@@ -302,15 +340,31 @@ int main(void)
 
             dt100Hz = (float)timerValue * 0.0000005f;  // For integrations in 100 Hz loop
 
-            sensors.accel100Hz[XAXIS] =  ((float)accelSummedSamples100Hz[XAXIS] * 0.1f - eepromConfig.accelBiasMPU[XAXIS] - accelTCBias[XAXIS]) * eepromConfig.accelScaleFactorMPU[XAXIS];
-            sensors.accel100Hz[YAXIS] = -((float)accelSummedSamples100Hz[YAXIS] * 0.1f - eepromConfig.accelBiasMPU[YAXIS] - accelTCBias[YAXIS]) * eepromConfig.accelScaleFactorMPU[YAXIS];
-            sensors.accel100Hz[ZAXIS] = -((float)accelSummedSamples100Hz[ZAXIS] * 0.1f - eepromConfig.accelBiasMPU[ZAXIS] - accelTCBias[ZAXIS]) * eepromConfig.accelScaleFactorMPU[ZAXIS];
+            nonRotatedAccelData[XAXIS] = ((float)accelSummedSamples100Hz[XAXIS] * 0.1f - eepromConfig.accelBiasMPU[XAXIS] - accelTCBias[XAXIS]) * eepromConfig.accelScaleFactorMPU[XAXIS];
+            nonRotatedAccelData[YAXIS] = ((float)accelSummedSamples100Hz[YAXIS] * 0.1f - eepromConfig.accelBiasMPU[YAXIS] - accelTCBias[YAXIS]) * eepromConfig.accelScaleFactorMPU[YAXIS];
+            nonRotatedAccelData[ZAXIS] = ((float)accelSummedSamples100Hz[ZAXIS] * 0.1f - eepromConfig.accelBiasMPU[ZAXIS] - accelTCBias[ZAXIS]) * eepromConfig.accelScaleFactorMPU[ZAXIS];
+
+		    arm_mat_init_f32(&a, 3, 3, (float *)mpuOrientationMatrix);
+
+		    arm_mat_init_f32(&b, 3, 1, (float *)nonRotatedAccelData);  // Sensor Coordinate Frame
+
+		    arm_mat_init_f32(&x, 3, 1,          sensors.accel100Hz);   // Body Coordinate Frame
+
+		    arm_mat_mult_f32(&a, &b, &x);
 
             if (eepromConfig.useMXR9150 == true)
             {
-            	sensors.accel100HzMXR[XAXIS] = -(accelSummedSamples100HzMXR[XAXIS] * 0.1f - eepromConfig.accelBiasMXR[XAXIS]) * eepromConfig.accelScaleFactorMXR[XAXIS];
-                sensors.accel100HzMXR[YAXIS] = -(accelSummedSamples100HzMXR[YAXIS] * 0.1f - eepromConfig.accelBiasMXR[YAXIS]) * eepromConfig.accelScaleFactorMXR[YAXIS];
-                sensors.accel100HzMXR[ZAXIS] =  (accelSummedSamples100HzMXR[ZAXIS] * 0.1f - eepromConfig.accelBiasMXR[ZAXIS]) * eepromConfig.accelScaleFactorMXR[ZAXIS];
+            	nonRotatedAccelData[XAXIS] = -(accelSummedSamples100HzMXR[XAXIS] * 0.1f - eepromConfig.accelBiasMXR[XAXIS]) * eepromConfig.accelScaleFactorMXR[XAXIS];
+                nonRotatedAccelData[YAXIS] =  (accelSummedSamples100HzMXR[YAXIS] * 0.1f - eepromConfig.accelBiasMXR[YAXIS]) * eepromConfig.accelScaleFactorMXR[YAXIS];
+                nonRotatedAccelData[ZAXIS] = -(accelSummedSamples100HzMXR[ZAXIS] * 0.1f - eepromConfig.accelBiasMXR[ZAXIS]) * eepromConfig.accelScaleFactorMXR[ZAXIS];
+
+		        arm_mat_init_f32(&a, 3, 3, (float *)mpuOrientationMatrix);
+
+		        arm_mat_init_f32(&b, 3, 1, (float *)nonRotatedAccelData);    // Sensor Coordinate Frame
+
+		        arm_mat_init_f32(&x, 3, 1,          sensors.accel100HzMXR);  // Body Coordinate Frame
+
+		        arm_mat_mult_f32(&a, &b, &x);
 
                 sensors.accel100HzMXR[XAXIS] = firstOrderFilter(sensors.accel100HzMXR[XAXIS], &firstOrderFilters[ACCEL100HZ_X_LOWPASS]);
                 sensors.accel100HzMXR[YAXIS] = firstOrderFilter(sensors.accel100HzMXR[YAXIS], &firstOrderFilters[ACCEL100HZ_Y_LOWPASS]);
