@@ -387,7 +387,7 @@ void systemInit(void)
 
     ///////////////////////////////////
 
-	checkUsbActive();
+	checkUsbActive(true);
 
 	#ifdef __VERSION__
         cliPortPrintF("\ngcc version " __VERSION__ "\n");

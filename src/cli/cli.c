@@ -41,6 +41,8 @@
 
 uint32_t (*cliPortAvailable)(void);
 
+void     (*cliPortClearBuffer)(void);
+
 uint8_t  (*cliPortRead)(void);
 
 void     (*cliPortPrint)(char *str);
@@ -866,7 +868,7 @@ void cliCom(void)
             ///////////////////////////////
 
             case 'Y': // Not Used
-                computeGeoMagElements();
+            	computeGeoMagElements();
 
                 cliQuery = 'x';
                 break;
@@ -879,12 +881,7 @@ void cliCom(void)
                 else
                     cliPortPrint("\nUSB Configured FALSE\n");
 
-                if (usbDeviceConnected  == true)
-                    cliPortPrint("\nUSB Connected TRUE\n");
-                else
-                    cliPortPrint("\nUSB Connected FALSE\n");
-
-            	cliQuery = 'x';
+                cliQuery = 'x';
                 break;
 
             ///////////////////////////////
