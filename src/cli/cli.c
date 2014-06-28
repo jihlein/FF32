@@ -631,10 +631,10 @@ void cliCom(void)
             ///////////////////////////////
 
             case 'z':
-                cliPortPrintF("%9ld, %9ld, %9ld, %9.4f\n", mxr9150XAxis(),
-                                                           mxr9150YAxis(),
-                                                           mxr9150ZAxis(),
-                                                           voltageMonitor());
+                cliPortPrintF("%9.4f, %9.4f, %9.4f, %9.4f\n", mxr9150XAxis(),
+                                                              mxr9150YAxis(),
+                                                              mxr9150ZAxis(),
+                                                              voltageMonitor());
                 break;
 
             ///////////////////////////////
