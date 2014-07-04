@@ -419,13 +419,12 @@ int main(void)
                 if ( eepromConfig.activeTelemetry == 16)
                 {
                	    // Vertical Variables
-            	    openLogPortPrintF("%9.4f, %9.4f, %9.4f, %4ld, %1d, %9.4f, %9.4f\n", verticalVelocityCmd,
-            	    		                                                            hDotEstimate,
-            	    		                                                            hEstimate,
-            	    		                                                            ms5611Temperature,
-            	    		                                                            verticalModeState,
-            	    		                                                            throttleCmd,
-            	    		                                                            eepromConfig.PID[HDOT_PID].iTerm);
+            	    openLogPortPrintF("%9.4f, %9.4f, %9.4f, %4ld, %1d, %9.4f\n", verticalVelocityCmd,
+            	    		                                                     hDotEstimate,
+            	    		                                                     hEstimate,
+            	    		                                                     ms5611Temperature,
+            	    		                                                     verticalModeState,
+            	    		                                                     throttleCmd);
                 }
 		    }
 
