@@ -444,7 +444,8 @@ void ubloxParseData(void)
 
     	if (ubloxId == 2)        // NAV:POSLLH
         {
-        	gps.latitude  = ubloxMessage.nav_posllh.lat;
+    		gps.iTOW      = ubloxMessage.nav_timeutc.iTOW;
+    		gps.latitude  = ubloxMessage.nav_posllh.lat;
         	gps.longitude = ubloxMessage.nav_posllh.lon;
         	gps.height    = ubloxMessage.nav_posllh.height;
         	gps.hMSL      = ubloxMessage.nav_posllh.hMSL;
@@ -454,7 +455,8 @@ void ubloxParseData(void)
 
     	else if (ubloxId == 3)   // NAV:STATUS
         {
-            gps.fix         = ubloxMessage.nav_status.gpsFix;
+    		gps.iTOW        = ubloxMessage.nav_timeutc.iTOW;
+    		gps.fix         = ubloxMessage.nav_status.gpsFix;
             gps.statusFlags = ubloxMessage.nav_status.flags;
         }
 
@@ -462,7 +464,8 @@ void ubloxParseData(void)
 
     	else if (ubloxId == 4)   // NAV:DOP
         {
-        	gps.hDop = ubloxMessage.nav_dop.hDOP;
+    		gps.iTOW = ubloxMessage.nav_timeutc.iTOW;
+    		gps.hDop = ubloxMessage.nav_dop.hDOP;
         	gps.vDop = ubloxMessage.nav_dop.vDOP;
 		}
 
@@ -470,13 +473,15 @@ void ubloxParseData(void)
 
     	else if (ubloxId == 6)   // NAV:SOL
         {
-			gps.numSats = ubloxMessage.nav_sol.numSV;
+    		gps.iTOW    = ubloxMessage.nav_timeutc.iTOW;
+    		gps.numSats = ubloxMessage.nav_sol.numSV;
         }
 
     	///////////////////////////////
 
     	else if (ubloxId == 18)  // NAV:VELNED
         {
+    		gps.iTOW    = ubloxMessage.nav_timeutc.iTOW;
     		gps.velN    = ubloxMessage.nav_velned.velN;
     		gps.velE    = ubloxMessage.nav_velned.velE;
     	    gps.velD    = ubloxMessage.nav_velned.velD;
@@ -499,7 +504,8 @@ void ubloxParseData(void)
 
     	else if (ubloxId == 48)  // NAV:SVINFO
     	{
-			gps.numCh = ubloxMessage.nav_svinfo.numCh;
+    		gps.iTOW  = ubloxMessage.nav_timeutc.iTOW;
+    		gps.numCh = ubloxMessage.nav_svinfo.numCh;
 
 			for (n = 0; n < gps.numCh; n++)
 			{

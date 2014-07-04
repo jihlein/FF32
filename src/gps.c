@@ -38,23 +38,30 @@
 #include "board.h"
 
 ///////////////////////////////////////////////////////////////////////////////
+
+uint8_t gpsInvalidCount = 0;
+
+uint8_t gpsValid = false;
+
+///////////////////////////////////////////////////////////////////////////////
 // Check GPS Validity
 ///////////////////////////////////////////////////////////////////////////////
 
 static uint32_t previousGPSiTOW = 0;
 
-uint8_t gpsValid(void)
+void setGpsValid(void)
 {
-	uint8_t valid;
-
 	if ((gps.iTOW != previousGPSiTOW) && (gps.fix == FIX_3D) && (gps.statusFlags & GPS_FIX_OK))
-	    valid = true;
-	else
-	    valid = false;
+	{
+		gpsValid = true;
+		gpsInvalidCount = 0;
+	}
+	else if (gpsInvalidCount < 3)
+		    gpsInvalidCount++;
+	else if (gpsInvalidCount >= 4)
+		gpsValid = false;
 
 	previousGPSiTOW = gps.iTOW;
-
-	return valid;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

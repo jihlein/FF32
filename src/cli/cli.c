@@ -411,7 +411,7 @@ void cliCom(void)
                			                                                                      gps.velN,
                			                                                                      gps.velE,
                			                                                                      gps.velD,
-               			                                                                      gps.fix,
+               			                                                                      gpsValid,
                			                                                                      gps.numSats);
                	        break;
 
@@ -452,6 +452,13 @@ void cliCom(void)
                	    	break;
 
                	    ///////////////////////
+
+               	    case 4:
+               	    	cliPortPrintF("%12ld    ",  gps.iTOW);
+               	    	cliPortPrintF("%2d    ",   (gps.fix == FIX_3D));
+               	    	cliPortPrintF("%2d    \n", (gps.statusFlags & GPS_FIX_OK));
+
+               	    	break;
                	}
 
                	validCliCommand = false;

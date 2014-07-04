@@ -446,15 +446,12 @@ int main(void)
             deltaTime5Hz    = currentTime - previous5HzTime;
             previous5HzTime = currentTime;
 
-            if (gpsValid() == true)
+            setGpsValid();
+
+            if (eepromConfig.mavlinkEnabled == true)
             {
-
+				mavlinkSendGpsRaw();
 			}
-
-            //if (eepromConfig.mavlinkEnabled == true)
-            //{
-			//	mavlinkSendGpsRaw();
-			//}
 
 			if (batMonVeryLowWarning > 0)
 			{
