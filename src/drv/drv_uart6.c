@@ -242,7 +242,7 @@ void uart6Init(void)
 
     USART_Cmd(USART6, ENABLE);
 
-    evrRegisterListener(uart6ListenerCB);
+    // TODO: evrRegisterListener(uart6ListenerCB);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

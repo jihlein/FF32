@@ -218,8 +218,8 @@ void processFlightCommands(void)
 	if ((commandInDetent[YAW] == true) && (flightMode == ATTITUDE) && (headingHoldEngaged == false))
 	{
 		headingHoldEngaged = true;
-	    setPIDstates(HEADING_PID, 0.0f);
-        setPIDstates(YAW_RATE_PID,       0.0f);
+	    setPIDstates(HEADING_PID,  0.0f);
+        setPIDstates(YAW_RATE_PID, 0.0f);
         headingReference = heading.mag;
 	}
 

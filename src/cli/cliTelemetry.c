@@ -98,7 +98,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'b': // Turn all Telemetry Off
+            case '0': // Turn all Telemetry Off
                 eepromConfig.activeTelemetry = 0;
 
                 telemetryQuery = 'a';
@@ -107,7 +107,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'c': // Toggle Telemetry Set 1 State
+            case '1': // Toggle Telemetry Set 1 State
                 eepromConfig.activeTelemetry = 1;
 
                 telemetryQuery = 'a';
@@ -116,7 +116,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'd': // Toggle Telemetry Set 2 State
+            case '2': // Toggle Telemetry Set 2 State
                 eepromConfig.activeTelemetry = 2;
 
                 telemetryQuery = 'a';
@@ -125,7 +125,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'e': // Toggle Telemetry Set 3 State
+            case '3': // Toggle Telemetry Set 3 State
                 eepromConfig.activeTelemetry = 4;
 
                 telemetryQuery = 'a';
@@ -134,7 +134,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'f': // Toggle Telemetry Set 4 State
+            case '4': // Toggle Telemetry Set 4 State
                 eepromConfig.activeTelemetry = 8;
 
                 telemetryQuery = 'a';
@@ -143,7 +143,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'g': // Toggle Telemetry Set 5 State
+            case '5': // Toggle Telemetry Set 5 State
                 eepromConfig.activeTelemetry = 16;
 
                 telemetryQuery = 'a';
@@ -152,7 +152,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'h': // Toggle Telemetry Set 6 State
+            case '6': // Toggle Telemetry Set 6 State
                 eepromConfig.activeTelemetry = 32;
 
                 telemetryQuery = 'a';
@@ -161,7 +161,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'i': // Toggle Telemetry Set 7 State
+            case '7': // Toggle Telemetry Set 7 State
                 eepromConfig.activeTelemetry = 64;
 
                 telemetryQuery = 'a';
@@ -170,7 +170,7 @@ void telemetryCLI()
 
             ///////////////////////////
 
-            case 'j': // Toggle Telemetry Set 8 State
+            case '8': // Toggle Telemetry Set 8 State
                 eepromConfig.activeTelemetry = 128;
 
                 telemetryQuery = 'a';
@@ -199,15 +199,15 @@ void telemetryCLI()
 			case '?':
 			   	cliPortPrint("\n");
 			   	cliPortPrint("'a' Telemetry Configuration Data\n");
-   		        cliPortPrint("'b' Turn all Telemetry Off\n");
-			   	cliPortPrint("'c' Toggle Telemetry Set 1 State\n");
-			   	cliPortPrint("'d' Toggle Telemetry Set 2 State\n");
-			   	cliPortPrint("'e' Toggle Telemetry Set 3 State\n");
-			   	cliPortPrint("'f' Toggle Telemetry Set 4 State\n");
-   		        cliPortPrint("'g' Toggle Telemetry Set 5 State\n");
-   		        cliPortPrint("'h' Toggle Telemetry Set 6 State\n");
-   		        cliPortPrint("'i' Toggle Telemetry Set 7 State\n");
-   		        cliPortPrint("'j' Toggle Telemetry Set 8 State\n");
+   		        cliPortPrint("'0' Turn all Telemetry Off\n");
+			   	cliPortPrint("'1' Toggle Telemetry Set 1 State\n");
+			   	cliPortPrint("'2' Toggle Telemetry Set 2 State\n");
+			   	cliPortPrint("'3' Toggle Telemetry Set 3 State\n");
+			   	cliPortPrint("'4' Toggle Telemetry Set 4 State\n");
+   		        cliPortPrint("'5' Toggle Telemetry Set 5 State\n");
+   		        cliPortPrint("'6' Toggle Telemetry Set 6 State\n");
+   		        cliPortPrint("'7' Toggle Telemetry Set 7 State\n");
+   		        cliPortPrint("'8' Toggle Telemetry Set 8 State\n");
    		        cliPortPrint("                                           'W' Write EEPROM Parameters\n");
    		        cliPortPrint("'x' Exit Telemetry CLI                     '?' Command Summary\n");
    		        cliPortPrint("\n");

@@ -43,7 +43,7 @@ float   attCmd[3];
 
 float   attPID[3];
 
-float   axisPID[3];
+float   ratePID[3];
 
 float   rateCmd[3];
 
@@ -103,19 +103,18 @@ void computeAxisCommands(float dt)
     ///////////////////////////////////
 
     error = rateCmd[ROLL] - sensors.gyro500Hz[ROLL];
-    axisPID[ROLL] = updatePID(error, dt, eepromConfig.rollAndPitchRateScaling, pidReset, &eepromConfig.PID[ROLL_RATE_PID ]);
+    ratePID[ROLL] = updatePID(error, dt, eepromConfig.rollAndPitchRateScaling, pidReset, &eepromConfig.PID[ROLL_RATE_PID ]);
 
     error = rateCmd[PITCH] + sensors.gyro500Hz[PITCH];
-    axisPID[PITCH] = updatePID(error, dt, eepromConfig.rollAndPitchRateScaling, pidReset, &eepromConfig.PID[PITCH_RATE_PID]);
+    ratePID[PITCH] = updatePID(error, dt, eepromConfig.rollAndPitchRateScaling, pidReset, &eepromConfig.PID[PITCH_RATE_PID]);
 
     error = rateCmd[YAW] - sensors.gyro500Hz[YAW];
-    axisPID[YAW] = updatePID(error, dt, eepromConfig.yawRateScaling, pidReset, &eepromConfig.PID[YAW_RATE_PID  ]);
+    ratePID[YAW] = updatePID(error, dt, eepromConfig.yawRateScaling, pidReset, &eepromConfig.PID[YAW_RATE_PID  ]);
 
     ///////////////////////////////////
 
 	if (verticalModeState == ALT_DISENGAGED_THROTTLE_ACTIVE)            // Manual Mode is ON
         throttleCmd = rxCommand[THROTTLE];
-
     else
     {
 		if ((verticalModeState == ALT_HOLD_FIXED_AT_ENGAGEMENT_ALT) ||  // Altitude Hold is ON

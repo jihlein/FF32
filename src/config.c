@@ -247,11 +247,11 @@ void checkFirstTime(bool eepromReset)
 
 	    ///////////////////////////////
 
-		eepromConfig.accelCutoff = 1.0f;
+		eepromConfig.accelCutoff = 0.1f;
 
 		///////////////////////////////
 
-	    eepromConfig.KpAcc = 5.0f;    // proportional gain governs rate of convergence to accelerometer
+	    eepromConfig.KpAcc = 1.0f;    // proportional gain governs rate of convergence to accelerometer
 	    eepromConfig.KiAcc = 0.0f;    // integral gain governs rate of convergence of gyroscope biases
 	    eepromConfig.KpMag = 5.0f;    // proportional gain governs rate of convergence to magnetometer
 	    eepromConfig.KiMag = 0.0f;    // integral gain governs rate of convergence of gyroscope biases
