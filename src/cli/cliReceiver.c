@@ -107,10 +107,16 @@ void receiverCLI()
 				cliPortPrintF("Max Roll and Pitch Rate Cmd:    %6.2f DPS\n", tempFloat);
 
 				tempFloat = eepromConfig.yawRateScaling * 180000.0 / PI;
-				cliPortPrintF("Max Yaw Rate Cmd:               %6.2f DPS\n", tempFloat);
+				cliPortPrintF("Max Yaw Rate Cmd:               %6.2f DPS\n\n", tempFloat);
+
+				cliPortPrintF("Roll Rate Cmd Tau:              %6.2f\n",   eepromConfig.rollRateCmdLowPassTau);
+				cliPortPrintF("Pitch Rate Cmd Tau:             %6.2f\n\n", eepromConfig.pitchRateCmdLowPassTau);
 
 				tempFloat = eepromConfig.attitudeScaling * 180000.0 / PI;
                 cliPortPrintF("Max Attitude Cmd:               %6.2f Degrees\n\n", tempFloat);
+
+				cliPortPrintF("Roll Attitude Cmd Tau:          %6.2f\n",   eepromConfig.rollAttCmdLowPassTau);
+				cliPortPrintF("Pitch Attitude Cmd Tau:         %6.2f\n\n", eepromConfig.pitchAttCmdLowPassTau);
 
 				cliPortPrintF("Arm Delay Count:                %3d Frames\n",   eepromConfig.armCount);
 				cliPortPrintF("Disarm Delay Count:             %3d Frames\n\n", eepromConfig.disarmCount);
@@ -226,6 +232,26 @@ void receiverCLI()
 
             ///////////////////////////
 
+            case 'H': // Read Rate Cmd Tau Value
+                eepromConfig.rollRateCmdLowPassTau  = readFloatCLI();
+                eepromConfig.pitchRateCmdLowPassTau = readFloatCLI();
+
+                receiverQuery = 'a';
+                validQuery = true;
+                break;
+
+            ///////////////////////////
+
+            case 'I': // Read Attitude Cmd Tau Value
+                eepromConfig.rollAttCmdLowPassTau  = readFloatCLI();
+                eepromConfig.pitchAttCmdLowPassTau = readFloatCLI();
+
+                receiverQuery = 'a';
+                validQuery = true;
+                break;
+
+            ///////////////////////////
+
             case 'W': // Write EEPROM Parameters
                 cliPortPrint("\nWriting EEPROM Parameters....\n\n");
                 writeEEPROM();
@@ -244,6 +270,8 @@ void receiverCLI()
 			   	cliPortPrint("                                           'E' Set Arm/Disarm Counts                EarmCount;disarmCount\n");
 			   	cliPortPrint("                                           'F' Set Maximum Rate Commands            FRP;Y RP = Roll/Pitch, Y = Yaw\n");
 			   	cliPortPrint("                                           'G' Set Maximum Attitude Command\n");
+			   	cliPortPrint("                                           'H' Set Roll/Pitch Rate Command Filters  HROLL;PITCH\n");
+			   	cliPortPrint("                                           'I' Set Roll/Pitch Att  Command Filters  IROLL;PITCH\n");
 			   	cliPortPrint("                                           'W' Write EEPROM Parameters\n");
 			   	cliPortPrint("'x' Exit Receiver CLI                      '?' Command Summary\n");
 			   	cliPortPrint("\n");

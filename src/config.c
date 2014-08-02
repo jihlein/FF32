@@ -43,7 +43,7 @@
 
 const char rcChannelLetters[] = "AERT1234";
 
-static uint8_t checkNewEEPROMConf = 8;
+static uint8_t checkNewEEPROMConf = 10;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -271,11 +271,14 @@ void checkFirstTime(bool eepromReset)
 
 	    ///////////////////////////////////
 
-	    eepromConfig.rollAndPitchRateScaling = 100.0 / 180000.0 * PI;  // Stick to rate scaling for 100 DPS
+	    eepromConfig.rollAndPitchRateScaling = 100.0f / 180000.0f * PI;  // Stick to rate scaling for 100 DPS
+	    eepromConfig.yawRateScaling          = 100.0f / 180000.0f * PI;  // Stick to rate scaling for 100 DPS
+	    eepromConfig.rollRateCmdLowPassTau   = 0.1f;
+	    eepromConfig.pitchRateCmdLowPassTau  = 0.1f;
 
-	    eepromConfig.yawRateScaling          = 100.0 / 180000.0 * PI;  // Stick to rate scaling for 100 DPS
-
-        eepromConfig.attitudeScaling         = 60.0  / 180000.0 * PI;  // Stick to att scaling for 60 degrees
+        eepromConfig.attitudeScaling         = 60.0f  / 180000.0f * PI;  // Stick to att scaling for 60 degrees
+        eepromConfig.rollAttCmdLowPassTau    = 0.1f;
+        eepromConfig.pitchAttCmdLowPassTau   = 0.1f;
 
         eepromConfig.nDotEdotScaling         = 0.009f;                 // Stick to nDot/eDot scaling (9 mps)/(1000 RX PWM Steps) = 0.009
 

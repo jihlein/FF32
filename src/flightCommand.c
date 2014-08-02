@@ -285,8 +285,8 @@ void processFlightCommands(void)
 		    if ((rxCommand[AUX2] > MIDCOMMAND) && (previousAUX2State <= MIDCOMMAND))  // AUX2 Rising edge detection
 		    {
 				verticalModeState = ALT_HOLD_FIXED_AT_ENGAGEMENT_ALT;
-				setPIDstates(HDOT_PID,        0.0f);
-				setPIDstates(H_PID,           0.0f);
+				setPIDstates(HDOT_PID, 0.0f);
+				setPIDstates(H_PID,    0.0f);
                 altitudeHoldReference = hEstimate;
                 throttleReference     = rxCommand[THROTTLE];
 		    }
